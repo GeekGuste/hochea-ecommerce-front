@@ -8,6 +8,7 @@
       "ESNext.AsyncIterable",
       "DOM"
     ],
+    "strictNullChecks": false,
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
@@ -25,6 +26,7 @@
     },
     "types": [
       "@nuxt/types",
+      "@nuxtjs/auth-next",
       "@nuxtjs/axios",
       "@types/node"
     ]

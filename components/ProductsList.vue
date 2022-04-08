@@ -1,0 +1,98 @@
+<template>
+  <b-row class="d-flex justify-content-center">
+    <div
+      class="card m-2 mb-4 shadow-sm"
+      v-for="product in products"
+      :key="product.id"
+    >
+      <div class="card-img">
+        <img
+          :src="product.principal_image"
+          class="card-img-top img-fluid"
+          :alt="product.label"
+        />
+      </div>
+      <div class="card-body d-flex flex-column justify-content-between">
+        <div>
+          <h4 class="card-title mb-3">{{ product.label }}</h4>
+          <p class="my-2">
+            <span class="text-muted">Categorie: </span>
+            <span class="text-capitalize">
+              {{ product.category.label }}
+            </span>
+          </p>
+          <p class="my-2">
+            <span class="text-muted">Price: </span>
+            <span v-if="!!product.promo_price" class="text-capitalize">
+              <b
+                ><strike>{{ product.price }} €</strike></b
+              >
+              &nbsp;&nbsp;
+              <b>{{ product.promo_price }} €</b>
+            </span>
+            <span v-else class="text-capitalize">
+              <b>{{ product.price }} €</b>
+            </span>
+          </p>
+        </div>
+        <div class="d-inline-block mt-4">
+          <NuxtLink :to="'/product/' + product.id" class="text-decoration-none">
+            <button
+              class="
+                btn btn-warning btn-sm
+                w-100
+                d-flex
+                align-items-center
+                justify-content-center
+                text-white
+              "
+            >
+              Détails
+              <i class="fas fa-angle-double-right mx-1"></i>
+            </button>
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+  </b-row>
+</template>
+<style lang="css" scoped>
+.card {
+  width: 21.25rem;
+}
+.card-img {
+  height: 22.5rem;
+  width: 100%;
+}
+img {
+  height: 100%;
+  width: 100%;
+  transform: scale(0.75);
+}
+</style>
+<script lang="ts">
+import Vue from "vue";
+import { Product } from "../models/product";
+export default Vue.extend({
+  name: "ProductsList",
+  data() {
+    return {
+      products: [],
+    };
+  },
+  created: function () {
+    this.$axios
+      .$get("/api/product/", {
+        params: { is_variant: "False", ...this.$route.query },
+      })
+      .then((products: Product[]) => {
+        this.products = products;
+      });
+  },
+  methods: {
+    productUrl(product: Product) {
+      return `/product/${product.id}`;
+    },
+  },
+});
+</script>
