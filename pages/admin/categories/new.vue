@@ -9,7 +9,7 @@
         >
           <b-form-input
             id="input-1"
-            v-model="form.name"
+            v-model="form.label"
             placeholder="Entrer le nom"
             required
           ></b-form-input>
@@ -31,33 +31,51 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import { Category } from "../../../models/category";
 
 export default Vue.extend({
   name: "AdminAddCategoriePage",
   layout: "admin",
+  middleware: ["auth"],
   data() {
     return {
       form: {
-        name: "",
+        label: "",
         parent: "",
       },
-      categories: [
-        { value: null, text: "Aucun" },
-        { text: "Hommes", value: 1 },
-        "Colliers",
-      ],
+      categories: [],
       show: true,
     };
+  },
+  created: function () {
+    this.$axios.$get("/api/category/").then((categories: Category[]) => {
+      this.categories = categories.map((category) => {
+        return { value: category.id, text: category.label } as never;
+      });
+      this.categories.push({
+        value: "",
+        text: "Aucun",
+        selected: "selected",
+      } as never);
+    });
   },
   methods: {
     onSubmit(event: any) {
       event.preventDefault();
-      alert(JSON.stringify(this.form));
+      this.$axios
+        .$post("/api/category/", { ...this.form, is_active: true })
+        .then((res: any) => {
+          alert(JSON.stringify(res));
+          this.clearForm();
+        });
     },
     onReset(event: any) {
       event.preventDefault();
+      this.clearForm();
+    },
+    clearForm() {
       // Reset our form values
-      this.form.name = "";
+      this.form.label = "";
       this.form.parent = "";
     },
   },

@@ -3,7 +3,7 @@ export default {
     head: {
         title: 'hochea-ecommerce-front',
         htmlAttrs: {
-            lang: 'en'
+            lang: 'fr'
         },
         meta: [
             { charset: 'utf-8' },
@@ -43,9 +43,49 @@ export default {
         'bootstrap-vue/nuxt',
         //'@nuxtjs/style-resources',
         // https://go.nuxtjs.dev/axios
-        '@nuxtjs/axios'
+        '@nuxtjs/axios',
+        '@nuxtjs/auth-next'
     ],
 
+    auth: {
+        strategies: {
+            local: {
+                scheme: 'refresh',
+                token: {
+                    property: 'access',
+                    maxAge: 1800,
+                    global: true,
+                    // type: 'Bearer'
+                },
+                refreshToken: {
+                    property: 'refresh',
+                    data: 'refresh',
+                    maxAge: 60 * 60 * 24 * 30
+                },
+                user: {
+                    property: 'username',
+                    //autoFetch: true
+                },
+                endpoints: {
+                    login: {
+                        url: 'auth/jwt/create/',
+                        method: 'post',
+                    },
+                    refresh: { url: 'auth/jwt/refresh/', method: 'post' },
+                    logout: { url: 'auth/token/logout/', method: 'post' },
+                    user: {
+                        url: 'auth/users/me/',
+                        method: 'get',
+                        propertyName: false,
+                    },
+                },
+                redirect: {
+                    login: '/login',
+                    home: '/',
+                },
+            },
+        },
+    },
     //Disable Nuxt from importing Bootstrap compiled CSS file
     bootstrapVue: {
         bootstrapCSS: true,
@@ -55,7 +95,7 @@ export default {
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-        baseURL: '/'
+        baseURL: 'http://127.0.0.1:8000'
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
