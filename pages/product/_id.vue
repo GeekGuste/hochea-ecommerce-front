@@ -100,7 +100,6 @@ import { Product, VariantType, Image } from "../../models/product";
 
 export default Vue.extend({
   name: "ProductDetailPage",
-  middleware: ["auth"],
   data() {
     return {
       product: {} as Product | null,
