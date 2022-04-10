@@ -8,7 +8,6 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <!-- Right aligned nav items -->
         <b-navbar-nav class="m-auto">
           <b-nav-form class="my-0">
             <b-input-group>
@@ -19,6 +18,7 @@
             </b-input-group>
           </b-nav-form>
         </b-navbar-nav>
+        <!-- Right aligned nav items -->
         <b-navbar-nav>
           <!--b-nav-item-dropdown text="Lang" right>
             <b-dropdown-item href="#">EN</b-dropdown-item>
@@ -27,13 +27,17 @@
             <b-dropdown-item href="#">FA</b-dropdown-item>
           </b-nav-item-dropdown-->
 
-          <b-nav-item-dropdown right>
+          <b-nav-item-dropdown text="Compte" right>
             <!-- Using 'button-content' slot -->
-              <template>
-                <em>Compte</em>
-              </template>
-              <b-dropdown-item v-if="this.$auth.loggedIn" to="/admin/">Administration</b-dropdown-item>
-             <b-dropdown-item v-else to="/login/">Se connecter</b-dropdown-item>
+            <template v-if="this.$auth.loggedIn">
+              <b-dropdown-item to="/admin/">Administration</b-dropdown-item>
+              <b-dropdown-item to="/profile/">Mes informations</b-dropdown-item>
+              <b-dropdown-item @click="logout()">Déconnexion</b-dropdown-item>
+            </template>
+            <template v-else>
+              <b-dropdown-item to="/login/">Se connecter</b-dropdown-item>
+              <b-dropdown-item to="/register/">S'inscrire</b-dropdown-item>
+            </template>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -61,6 +65,13 @@ export default Vue.extend({
       .then((categoryTree: CategoryTree[]) => {
         this.categoryTree = categoryTree;
       });
+  },
+  methods: {
+    async logout(){
+      this.$auth
+        .logout()
+        .then(() => { window.location.reload(); })
+    }
   }
 })
 </script>
