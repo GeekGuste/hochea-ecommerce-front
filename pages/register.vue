@@ -51,6 +51,9 @@
             placeholder="Mot de passe"
             required
           ></b-form-input>
+          <b-form-text>
+            Votre mot de passe doit faire au moins 8 caractères
+          </b-form-text>
         </b-form-group>
 
         <b-button type="submit" variant="primary">S'inscrire</b-button>

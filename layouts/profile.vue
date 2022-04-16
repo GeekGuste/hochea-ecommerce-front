@@ -7,7 +7,7 @@
             <b-list-group>
                 <b-list-group-item to="/profile/">Compte</b-list-group-item>
                 <b-list-group-item to="/profile/edit-account">Modification du compte</b-list-group-item>
-                <b-list-group-item>Modification de mot de passe</b-list-group-item>
+                <b-list-group-item to="/profile/update-password">Modification de mot de passe</b-list-group-item>
                 <b-list-group-item>Commandes</b-list-group-item>
                 <b-list-group-item></b-list-group-item>
             </b-list-group>

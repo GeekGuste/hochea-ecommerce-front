@@ -65,6 +65,11 @@ export default Vue.extend({
         });
         console.log("success: " + JSON.stringify(response));
       } catch (error) {
+        //@ts-ignore
+         this.$bvToast.toast("Email ou mot de passe incorrect, veuillez réessayer", {
+            title: "Erreur",
+            variant: "danger",
+          });
         console.log("notification unsuccessful because " + JSON.stringify(error));
       }
     },
