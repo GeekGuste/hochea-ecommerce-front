@@ -63,7 +63,7 @@ export default {
                     maxAge: 60 * 60 * 24 * 30
                 },
                 user: {
-                    property: 'username',
+                    property: /*'username'*/ false,
                     //autoFetch: true
                 },
                 endpoints: {
@@ -89,7 +89,7 @@ export default {
     //Disable Nuxt from importing Bootstrap compiled CSS file
     bootstrapVue: {
         bootstrapCSS: true,
-        bootstrapVueCSS: true
+        bootstrapVueCSS: true,
     },
 
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
