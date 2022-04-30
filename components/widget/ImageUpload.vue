@@ -7,7 +7,7 @@
         :state="Boolean(file)"
         accept="image/*"
         @change="onSelect"
-        required
+        :required="!!url"
         placeholder="selectionnez une image"
         drop-placeholder="Cliquer-glisser ici"
       ></b-form-file>
@@ -21,13 +21,13 @@ export default Vue.extend({
   props: {
     imageUrl: {
       type: String,
-      default: () => "",
+      default: () => {return "";},
     },
   },
   data() {
     return {
       url: this.imageUrl,
-      file: "" as unknown,
+      file: [] as unknown,
     };
   },
   methods: {
