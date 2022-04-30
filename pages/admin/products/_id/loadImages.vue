@@ -4,7 +4,7 @@
       <div class="d-flex flex-wrap">
         <div>
           <label>{{ product.label }}</label>
-          <ImageUploadAddButton :id="product.id" @onSelect="onSelect" />
+          <ImageUploadAddButton :id="(product.id + '')" @onSelect="onSelect" />
         </div>
         <div class="d-flex flex-column m-4" v-for="(image, index) in product.images" :key="image.id">
           <img :src="image.photo" width="100px" height="100px" />
@@ -24,10 +24,15 @@
         <div v-for="(variant, index) in product.variants" :key="index">
           <div class="d-flex flex-wrap" :id="variant.id">
             <div>
-              <label>{{
-                product.variant_type.label + " = " + variant.variant_value
-              }}</label>
-              <ImageUploadAddButton :id="variant.id" @onSelect="onSelect" />
+              <label v-if="product.variant_type.label == 'Couleur'">{{
+                product.variant_type.label + ": "
+              }}
+              <div width="30px" height="20px" :style="'display: inline-block; width: 50px; height: 18px; background-color: '+ variant.variant_value"></div>
+              </label>
+              <label v-else>
+                {{ product.variant_type.label + " = " + variant.variant_value }}
+              </label>
+              <ImageUploadAddButton :id="(variant.id + '')" @onSelect="onSelect" />
             </div>
             <div class="d-flex flex-column m-4" v-for="(image, index) in variant.images" :key="image.id">
               <img :src="image.photo" width="100px" height="100px" />
@@ -99,7 +104,7 @@ export default Vue.extend({
         });
     },
     deleteImage(imageId: number, index: number, id: number) {
-      this.$axios.$put(`/api/image/remove/${imageId}`).then(() => {
+      this.$axios.$delete(`/api/image/${imageId}/`).then(() => {
         if (this.product.id == id) {
           this.product.images.splice(index, 1);
         } else {

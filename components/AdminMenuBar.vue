@@ -8,7 +8,7 @@
       </b-dropdown>
       <b-dropdown right text="Produit">
         <b-dropdown-item to="/admin/products/new">Ajouter</b-dropdown-item>
-        <b-dropdown-item>Liste</b-dropdown-item>
+        <b-dropdown-item to="/admin/products">Liste</b-dropdown-item>
       </b-dropdown>
     </b-button-group>
   </div>

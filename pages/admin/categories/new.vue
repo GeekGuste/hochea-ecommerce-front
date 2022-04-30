@@ -32,6 +32,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Category } from "../../../models/category";
+import { PaginatedList } from "../../../models/pagination";
 
 export default Vue.extend({
   name: "AdminAddCategoriePage",
@@ -48,8 +49,8 @@ export default Vue.extend({
     };
   },
   created: function () {
-    this.$axios.$get("/api/category/").then((categories: Category[]) => {
-      this.categories = categories.map((category) => {
+    this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
+      this.categories = categoryList.results.map((category) => {
         return { value: category.id, text: category.label } as never;
       });
       this.categories.push({

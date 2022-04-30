@@ -25,9 +25,14 @@
             required
           ></b-form-input>
         </b-form-group>
-
-        <b-button type="submit" variant="primary">Se connecter</b-button>
-        <b-button type="reset" variant="danger">Annuler</b-button>
+        <div class="text-center">
+          <b-button type="submit" variant="primary">Se connecter</b-button>
+          <b-button type="reset" variant="danger">Annuler</b-button>
+          <hr/>
+          Ou
+          <br/>
+          <NuxtLink to="/register" class="btn btn-info">S'inscrire</NuxtLink>
+        </div>
       </b-form>
     </b-card>
   </div>
