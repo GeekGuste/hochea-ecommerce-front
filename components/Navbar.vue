@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable="md">
+    <b-navbar toggleable="sm">
       <b-navbar-brand to="/">
         <img src="~/assets/LOGO_ALPHA.png" width="50" />
       </b-navbar-brand>
@@ -11,10 +11,10 @@
         <b-navbar-nav class="m-auto">
           <b-nav-form class="my-0">
             <b-input-group>
-              <b-form-input placeholder="Rechercher"></b-form-input>
+              <b-form-input placeholder="Rechercher ici"></b-form-input>
               <b-input-group-append>
                 <b-button class="text-white" variant="warning"
-                  >Recherche</b-button
+                  ><b-icon icon="search"></b-icon></b-button
                 >
               </b-input-group-append>
             </b-input-group>
@@ -28,7 +28,7 @@
             <b-dropdown-item href="#">RU</b-dropdown-item>
             <b-dropdown-item href="#">FA</b-dropdown-item>
           </b-nav-item-dropdown-->
-
+          <b-nav-item to="/cart"><span class="badge badge-primary">{{cartNumberOfProducts}}</span> <b-icon icon="cart"></b-icon></b-nav-item>
           <b-nav-item-dropdown text="Compte" right>
             <!-- Using 'button-content' slot -->
             <template v-if="this.$auth.loggedIn">
@@ -63,6 +63,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { CategoryTree } from "../models/category";
+import { mapGetters } from 'vuex';
+
 export default Vue.extend({
   name: "Navbar",
   data() {
@@ -76,6 +78,11 @@ export default Vue.extend({
       .then((categoryTree: CategoryTree[]) => {
         this.categoryTree = categoryTree;
       });
+  },
+  computed: {
+    ...mapGetters({
+      cartNumberOfProducts: 'cart/cartNumberOfProducts'
+    }),
   },
   methods: {
     async logout() {

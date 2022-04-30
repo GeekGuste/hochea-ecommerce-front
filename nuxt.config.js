@@ -26,7 +26,7 @@ export default {
     },
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: [],
+    plugins: [ /*'~/plugins/bootstrap-vue-treeview.js'*/ ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
@@ -88,6 +88,7 @@ export default {
     },
     //Disable Nuxt from importing Bootstrap compiled CSS file
     bootstrapVue: {
+        icons: true,
         bootstrapCSS: true,
         bootstrapVueCSS: true,
     },

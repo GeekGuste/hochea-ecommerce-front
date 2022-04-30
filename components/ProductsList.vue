@@ -72,6 +72,7 @@ img {
 </style>
 <script lang="ts">
 import Vue from "vue";
+import { PaginatedList } from "../models/pagination";
 import { Product } from "../models/product";
 export default Vue.extend({
   name: "ProductsList",
@@ -85,8 +86,8 @@ export default Vue.extend({
       .$get("/api/product/", {
         params: { is_variant: "False", ...this.$route.query },
       })
-      .then((products: Product[]) => {
-        this.products = products;
+      .then((productsList: PaginatedList<Product>) => {
+        this.products = productsList.results;
       });
   },
   methods: {
