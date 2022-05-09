@@ -7,7 +7,8 @@
           <b-list-group>
                 <b-list-group-item to="/admin/">Accueil</b-list-group-item>
                 <b-list-group-item to="/admin/categories/">Catégories</b-list-group-item>
-                <b-list-group-item to="/admin/products">produits</b-list-group-item>
+                <b-list-group-item to="/admin/products/">Produits</b-list-group-item>
+                <b-list-group-item to="/admin/delivery/zone/">Zone de livraison</b-list-group-item>
                 <b-list-group-item>Commandes</b-list-group-item>
                 <b-list-group-item></b-list-group-item>
             </b-list-group>

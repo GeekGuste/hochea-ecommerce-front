@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row class="product-container">
+    <b-row class="product-container ml-1">
       <b-col class="d-flex flex-column image-container" sm="12" md="5">
         <b-img
           v-if="!!product"

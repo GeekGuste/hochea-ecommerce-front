@@ -31,6 +31,9 @@ export default {
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
 
+    env: {
+        STRIPE_PK: process.env.STRIPE_PK,
+    },
     // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
     buildModules: [
         // https://go.nuxtjs.dev/typescript
@@ -96,7 +99,7 @@ export default {
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-        baseURL: 'http://127.0.0.1:8000'
+        baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000'
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
