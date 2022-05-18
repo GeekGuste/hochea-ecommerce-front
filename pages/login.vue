@@ -55,7 +55,6 @@ export default Vue.extend({
     onSubmit(event: any) {
       event.preventDefault();
       this.logInUser(this.form);
-      //this.logInUser(this.form);
     },
     onReset(event: any) {
       event.preventDefault();
@@ -68,14 +67,12 @@ export default Vue.extend({
         let response = await this.$auth.loginWith("local", {
           data: form,
         });
-        console.log("success: " + JSON.stringify(response));
       } catch (error) {
         //@ts-ignore
          this.$bvToast.toast("Email ou mot de passe incorrect, veuillez réessayer", {
             title: "Erreur",
             variant: "danger",
           });
-        console.log("notification unsuccessful because " + JSON.stringify(error));
       }
     },
   },

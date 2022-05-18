@@ -1,4 +1,5 @@
 <template>
+<div>
   <b-row class="d-flex justify-content-center">
     <div
       class="card m-2 mb-4 shadow-sm"
@@ -55,6 +56,12 @@
       </div>
     </div>
   </b-row>
+  <b-row class="d-flex justify-content-center" v-if="!!productsList.next || !!productsList.previous">
+    <div>
+      <b-pagination-nav :link-gen="linkGen" v-bind:number-of-pages="productsList.count/2" use-router></b-pagination-nav>
+    </div>
+  </b-row>
+</div>
 </template>
 <style lang="css" scoped>
 .card {
@@ -76,24 +83,39 @@ import { PaginatedList } from "../models/pagination";
 import { Product } from "../models/product";
 export default Vue.extend({
   name: "ProductsList",
+  props: {
+    productsList: null,
+  },
   data() {
     return {
-      products: [],
+      //products: [],
+      pageNumber: 1
     };
   },
   created: function () {
-    this.$axios
+    /*this.$axios
       .$get("/api/product/", {
         params: { is_variant: "False", ...this.$route.query },
       })
       .then((productsList: PaginatedList<Product>) => {
         this.products = productsList.results;
-      });
+      });*/
+  },
+  mounted(){
+    //console.log(this.$router.history.current.query)
+  },
+  computed: {
+    products(){
+      return this.productsList?.results;
+    }
   },
   methods: {
     productUrl(product: Product) {
       return `/product/${product.id}`;
     },
+    linkGen(pageNum: Number){
+      return this.$router.history.current.path + "?page=" + pageNum;
+    }
   },
 });
 </script>

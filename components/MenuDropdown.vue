@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown-item class="menu-item"><NuxtLink @click="window.reload()" :prefetch="false" :to="generateCategoryUrl(tree)">{{ tree.label }}</NuxtLink></b-dropdown-item>
+  <b-dropdown-item class="menu-item"><NuxtLink :to="generateCategoryUrl(tree)">{{ tree.label }}</NuxtLink></b-dropdown-item>
 </template>
 <style scoped>
   .menu-item a{

@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 export default {
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
@@ -13,7 +15,10 @@ export default {
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-        ]
+        ],
+        script: [
+            { src: 'https://js.stripe.com/v3' },
+        ],
     },
 
     // Global CSS: https://go.nuxtjs.dev/config-css
@@ -26,18 +31,23 @@ export default {
     },
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: [ /*'~/plugins/bootstrap-vue-treeview.js'*/ ],
+    plugins: [{
+        src: '~/plugins/vue-stripe.js',
+        /*ssr: false*/
+        mode: 'client'
+    }, ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
 
     env: {
-        STRIPE_PK: process.env.STRIPE_PK,
+        STRIPE_PK: process.env.STRIPE_PK
     },
     // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
     buildModules: [
         // https://go.nuxtjs.dev/typescript
-        '@nuxt/typescript-build'
+        '@nuxt/typescript-build',
+        '@nuxtjs/dotenv'
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules

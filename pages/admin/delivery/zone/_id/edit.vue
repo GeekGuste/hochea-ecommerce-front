@@ -43,7 +43,7 @@ export default Vue.extend({
       deliveryZoneInfo: {
         id: 0,
         zone: "",
-        delivery_charges: "",
+        delivery_charges: 0,
       },
     };
   },

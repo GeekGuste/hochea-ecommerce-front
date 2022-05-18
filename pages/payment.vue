@@ -171,10 +171,20 @@
                   <h3><b>Frais de livraison:</b> {{ form.delivery_charges }} €</h3>
                   <h3><b>Total commande:</b> {{totalCommande}} €</h3>
                 </div>
-                <div v-if="!isInvalid">
-                  Ici sera le formulaire de paiement!
+                <div>
+                  <div>
+                    <center><u>Paiement</u></center>
+                   <stripe-element-card
+                      ref="paymentRef"
+                      :pk="publishableKey"
+                      @token="tokenCreated"
+                      @error="paymentError"
+                      :elements-options="elementsOptions"
+                    />
+                    <br/>
+                  </div>
                 </div>
-                <b-button variant="warning" :disabled="isInvalid" class="text-white float-right"
+                <b-button variant="warning" @click="pay" :disabled="isInvalid" class="text-white float-right"
                 >Commander &gt;</b-button>
             </div>
           </div>
@@ -188,9 +198,14 @@ import Vue from "vue";
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import { DeliveryZoneInfo } from "../models/delivery";
 import { PaginatedList } from "../models/pagination";
+import { StripeElementCard } from '@vue-stripe/vue-stripe';
+
 export default Vue.extend({
   name: "PaymentPage",
   middleware: ["auth"],
+  components: {
+    StripeElementCard
+  },
   data(){
     return {
       form: {
@@ -207,6 +222,11 @@ export default Vue.extend({
         delivery_charges: null,
       },
       deliveryZoneOptions: [],
+      publishableKey: "pk_test_51Kpr85DP9ndu4EFOVJwmW613vPQLBznGcMK3uCTRb9P3BukYWtvjPLPRE6Ro1UiQUj4iyS48PZKjgGfmP14BBZpA00zasiO8k7",
+      elementsOptions: {
+        appearance: {}, // appearance options
+      },
+      paymentIntent: null
     }
   },
   created: function () {
@@ -217,6 +237,10 @@ export default Vue.extend({
           return {value: deliveryZoneInfo.id, text: deliveryZoneInfo.zone, delivery_charges: deliveryZoneInfo.delivery_charges};
         });
       });
+  },
+  mounted() {
+    console.log(this.items)
+    
   },
   computed: {
     ...mapGetters({
@@ -243,11 +267,31 @@ export default Vue.extend({
       reduceProductQuantity: "cart/reduceProductQuantity",
       removeProduct: "cart/removeProduct",
     }),
-    zoneSelection(e){
-      let zone = this.deliveryZoneOptions.find((z) => z.value == e);
+    zoneSelection(e: any){
+      let zone = this.deliveryZoneOptions.find((z: any) => z.value == e);
       this.form.zone = zone.text;
       this.form.delivery_charges = zone.delivery_charges;
-    }
+    },
+    async generatePaymentIntent () {
+      const paymentIntent = await this.$axios
+      .$post("/sales/create-payment/", {
+        'items': this.items,
+        ...this.form
+      }); // this is just a dummy, create your own API call
+      this.elementsOptions.clientSecret = paymentIntent.payment_intent.client_secret;
+      console.log(paymentIntent);
+      this.paymentIntent = paymentIntent;
+    },
+    tokenCreated (token) {
+      console.log(token);
+    },
+    paymentError(event){
+      console.log(event);      
+    },
+    pay () {
+      this.generatePaymentIntent();
+      this.$refs.paymentRef.submit();
+    },
   },
 });
 </script>

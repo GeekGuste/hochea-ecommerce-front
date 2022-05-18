@@ -51,6 +51,8 @@
     </b-navbar>
     <div class="bg-warning">
       <b-nav align="center">
+        <b-dropdown-item class="text-white menu-item"><NuxtLink to="/">Accueil</NuxtLink></b-dropdown-item>
+        <b-dropdown-item class="text-white menu-item"><NuxtLink to="/search">Boutique</NuxtLink></b-dropdown-item>
         <MenuDropdown
           v-for="category in categoryTree"
           :key="category.id"
@@ -60,6 +62,15 @@
     </div>
   </div>
 </template>
+<style scoped>
+  .menu-item a{
+    color: #ffffff;
+  }
+  .menu-item:hover{
+    background-color: #007bff;
+    text-decoration: underline;
+  }
+</style>
 <script lang="ts">
 import Vue from "vue";
 import { CategoryTree } from "../models/category";
@@ -72,7 +83,7 @@ export default Vue.extend({
       categoryTree: [],
     };
   },
-  created: function () {
+  mounted: function () {
     this.$axios
       .$get("/api/category/tree/")
       .then((categoryTree: CategoryTree[]) => {
