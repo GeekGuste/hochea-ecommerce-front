@@ -11,8 +11,8 @@
         <b-navbar-nav class="m-auto">
           <b-nav-form class="my-0">
             <b-input-group>
-              <b-form-input placeholder="Rechercher ici"></b-form-input>
-              <b-input-group-append>
+              <b-form-input v-model="searchText" @keydown.enter="search" placeholder="Rechercher ici"></b-form-input>
+              <b-input-group-append @click="search">
                 <b-button class="text-white" variant="warning"
                   ><b-icon icon="search"></b-icon></b-button
                 >
@@ -81,6 +81,7 @@ export default Vue.extend({
   data() {
     return {
       categoryTree: [],
+      searchText: "",
     };
   },
   mounted: function () {
@@ -89,6 +90,7 @@ export default Vue.extend({
       .then((categoryTree: CategoryTree[]) => {
         this.categoryTree = categoryTree;
       });
+      this.searchText = this.$route.query?.search_text;
   },
   computed: {
     ...mapGetters({
@@ -101,6 +103,9 @@ export default Vue.extend({
         window.location.reload();
       });
     },
+    search(){
+      this.$router.push({path:'/search/', query: { search_text: this.searchText}});
+    }
   },
 });
 </script>

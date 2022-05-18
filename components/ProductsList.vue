@@ -58,7 +58,7 @@
   </b-row>
   <b-row class="d-flex justify-content-center" v-if="!!productsList.next || !!productsList.previous">
     <div>
-      <b-pagination-nav :link-gen="linkGen" v-bind:number-of-pages="productsList.count/2" use-router></b-pagination-nav>
+      <b-pagination-nav :link-gen="linkGen" v-model="currentPage" v-bind:number-of-pages="productsList.count/12" use-router></b-pagination-nav>
     </div>
   </b-row>
 </div>
@@ -89,20 +89,16 @@ export default Vue.extend({
   data() {
     return {
       //products: [],
-      pageNumber: 1
+      currentPage: 1
     };
   },
-  created: function () {
-    /*this.$axios
-      .$get("/api/product/", {
-        params: { is_variant: "False", ...this.$route.query },
-      })
-      .then((productsList: PaginatedList<Product>) => {
-        this.products = productsList.results;
-      });*/
-  },
   mounted(){
-    //console.log(this.$router.history.current.query)
+    this.currentPage = this.$route.query.page || 1;
+  },
+  watch: {
+    "$route.query" (){
+      this.currentPage = this.$route.query.page || 1;
+    }
   },
   computed: {
     products(){
@@ -114,7 +110,18 @@ export default Vue.extend({
       return `/product/${product.id}`;
     },
     linkGen(pageNum: Number){
-      return this.$router.history.current.path + "?page=" + pageNum;
+      let query = this.$route.query;
+      query.page = pageNum;
+      return this.$router.history.current.path + "?" + this.toQueryString(query);
+    },
+    toQueryString(obj: Object){
+      let str = [];
+      for (var p in obj){
+        if (obj.hasOwnProperty(p)) {
+          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+      }
+      return str.join("&");
     }
   },
 });

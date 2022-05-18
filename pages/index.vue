@@ -5,6 +5,7 @@
     </b-row>
     <b-row>
       <b-col sm="12">
+        <h2 v-if="!!productsList && !!productsList.count && productsList.count > 0"><center>Nos derniers produits</center></h2>
         <ProductsList :productsList="productsList" />
       </b-col>
     </b-row>
@@ -45,7 +46,6 @@ export default Vue.extend({
       })
       .then((productsList: PaginatedList<Product>) => {
         this.productsList = productsList;
-        console.log(this.productsList);
       });
   },
 });

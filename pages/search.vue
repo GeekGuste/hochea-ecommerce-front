@@ -42,13 +42,23 @@ export default Vue.extend({
       .then((categoryTree: CategoryTree[]) => {
         this.categoryTree = categoryTree;
       });
-    this.$axios
+    this.loadProducts();
+  },
+  watch: {
+    "$route.query" (){
+      this.loadProducts();
+    }
+  },
+  methods: {
+    loadProducts(){
+      this.$axios
       .$get("/api/product/", {
         params: { is_variant: "False", ...this.$route.query },
       })
       .then((productsList: PaginatedList<Product>) => {
         this.productsList = productsList;
       });
+    }
   }
 });
 </script>
