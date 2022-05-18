@@ -117,7 +117,9 @@
           </b-col>
         </b-form>
       </div>
-      <div class="float-right">
+      <hr/>
+      <div class="mb-5 text-center">
+          <NuxtLink class="btn btn-info" :to="dataStepUrl">&lt; Informations</NuxtLink>
           <NuxtLink class="btn btn-primary" :to="imageStepUrl">Chargement d'images &gt;</NuxtLink>
       </div>
     </b-card>
@@ -125,6 +127,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import { PaginatedList } from "../../../../models/pagination";
 import { Product, VariantType } from "../../../../models/product";
 
 export default Vue.extend({
@@ -148,12 +151,12 @@ export default Vue.extend({
         this.product = product;
         this.$axios
           .$get("/api/varianttype/")
-          .then((variantTypes: VariantType[]) => {
+          .then((variantTypesList: PaginatedList<VariantType>) => {
             this.variantTypes.push({
               value: null,
               text: "Pas de variant",
             } as never);
-            variantTypes.forEach((variantType: VariantType) => {
+            variantTypesList.results.forEach((variantType: VariantType) => {
               if (product?.variant_type?.id == variantType.id)
                 this.variantTypes.push({
                   value: variantType.id,
@@ -181,6 +184,9 @@ export default Vue.extend({
     },
     imageStepUrl(){
         return `/admin/products/${this.$route.params.id}/loadImages/`;
+    },
+    dataStepUrl(){
+        return `/admin/products/${this.$route.params.id}/setData/`;
     }
   },
   methods: {

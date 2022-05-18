@@ -1,13 +1,13 @@
 <template>
   <div class="col-md-6 offset-md-3">
-    <b-card header="Ajouter un produit">
-      <b-form @submit="onSubmit" @reset="onReset">
-        <ImageUpload :imageUrl="null" @onSelect="onImageSelect" />
+    <b-card header="Modifier un produit">
+      <b-form @submit="onSubmit">
+        <ImageUpload :imageUrl="product.principal_image" @onSelect="onImageSelect" />
         <b-form-group id="input-group-2" label="catégorie:" label-for="input-3">
           <b-form-select
             id="input-3"
             required
-            v-model="form.category"
+            v-model="categorie_id"
             :options="categories"
           ></b-form-select>
         </b-form-group>
@@ -18,7 +18,7 @@
         >
           <b-form-input
             id="input-1"
-            v-model="form.label"
+            v-model="product.label"
             placeholder="Entrer le nom"
             required
           ></b-form-input>
@@ -30,7 +30,7 @@
         >
           <b-form-textarea
             id="input-1"
-            v-model="form.description"
+            v-model="product.description"
             placeholder="Entrer la description"
             rows="3"
             max-rows="6"
@@ -43,15 +43,15 @@
             type="number"
             min="0"
             step="any"
-            v-model="form.price"
+            v-model="product.price"
             required
           ></b-form-input>
         </b-form-group>
         <b-form-checkbox
           id="checkbox-1"
           v-model="in_promotion"
+          value="in_promotion"
           name="checkbox-1"
-          value="true"
           unchecked-value="false"
         >
           En promotion?
@@ -67,21 +67,23 @@
             type="number"
             step="any"
             min="0"
-            v-model="form.promo_price"
+            v-model="product.promo_price"
             required
           ></b-form-input>
         </b-form-group>
-        <b-button type="submit" variant="primary">Enregistrer</b-button>
-        <b-button type="reset" variant="danger">Annuler</b-button>
+        <b-button type="submit" variant="primary">Modifier</b-button>
+        <NuxtLink :to="variantStepUrl" class="btn btn-primary">
+          Variants &gt;</NuxtLink>
       </b-form>
     </b-card>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import ImageUpload from "../../../components/widget/ImageUpload.vue";
-import { Category } from "../../../models/category";
-import { PaginatedList } from "../../../models/pagination";
+import { Product } from "../../../../models/product";
+import ImageUpload from "../../../..//components/widget/ImageUpload.vue";
+import { Category } from "../../../../models/category";
+import { PaginatedList } from "../../../../models/pagination";
 
 export default Vue.extend({
   components: { ImageUpload },
@@ -90,36 +92,37 @@ export default Vue.extend({
   middleware: ["auth"],
   data() {
     return {
-      form: {
-        label: "",
-        category: "",
-        description: "",
-        qte_stock: "100",
-        principal_image: "",
-        price: "",
-        promo_price: "",
-        is_active: true,
-      },
+      product: {} as Product,
       in_promotion: false,
       categories: [],
       show: true,
+      categorie_id: null,
+      image: null,
     };
   },
   created: function () {
+    this.$axios
+      .$get(`/api/product/${this.$route.params.id}/`)
+      .then((product: Product) => {
+        this.product = product;
+        this.categorie_id = product.category.id;
+        //check for promotion
+        this.in_promotion = (this.product.promo_price > 0);
+      });
     this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
         this.categories = categoryList.results.map((category) => {
-        return { value: category.id, text: category.label } as never;
+          if(category.id == this.product.category.id){
+            return { value: category.id, text: category.label, selected: "selected" } as never;
+          }
+          else{
+            return { value: category.id, text: category.label } as never;            
+          }
       });
-      this.categories.push({
-        value: "",
-        text: "Aucun",
-        selected: "selected",
-      } as never);
     });
   },
   methods: {
     onImageSelect(payload: any) {
-      this.form.principal_image = payload.image;
+      this.image = payload.image;
     },
     onSubmit(event: any) {
       event.preventDefault();
@@ -130,38 +133,37 @@ export default Vue.extend({
         },
       };
       formData.append("is_active", "true");
-      formData.append("label", this.form.label);
-      formData.append("category", this.form.category);
-      formData.append("description", this.form.description);
-      formData.append("qte_stock", this.form.qte_stock);
-      formData.append("principal_image", this.form.principal_image);
-      formData.append("price", this.form.price);
-      formData.append("promo_price", this.form.promo_price);
-      this.$axios.$post("/api/product/", formData, config).then((res: any) => {
-        console.log(JSON.stringify(res));
-        alert("Produit ajouté avec succès")
-        this.clearForm();
+      formData.append("label", this.product.label);
+      formData.append("category", this.categorie_id);
+      formData.append("description", this.product.description);
+      formData.append("qte_stock", this.product.qte_stock as any);
+      if(!!this.image){
+        formData.append("principal_image", this.image);
+      }
+      formData.append("price", this.product.price as any);
+      formData.append("promo_price", this.product.promo_price as any);
+      this.$axios.$patch(`/api/product/${this.$route.params.id}/`, formData, config).then((res: any) => {
+        //@ts-ignore
+        this.$bvToast.toast("Produit ajouté avec succès", {
+            title: "Succès",
+            variant: "success",
+          });
         this.$router.push('/admin/products/'+res.id+'/editVariant');
       })
       .catch(function(error) {
-          alert("Erreur d'ajout du produit.")
-          // handle error
-          console.log(error);
+          //show error message
+          //@ts-ignore
+          this.$bvToast.toast("Erreur d'ajout du produit.", {
+            title: "Erreur",
+            variant: "danger",
+          });
        });
-    },
-    onReset(event: any) {
-      event.preventDefault();
-      this.clearForm();
-    },
-    clearForm() {
-      // Reset our form values
-      this.form.label = "";
-      this.form.category = "";
-      this.form.description = "";
-      this.form.qte_stock = "";
-      this.form.price = "";
-      this.form.promo_price = "";
     }
   },
+  computed: {
+    variantStepUrl() {
+      return `/admin/products/${this.$route.params.id}/editVariant/`;
+    },
+  }
 });
 </script>

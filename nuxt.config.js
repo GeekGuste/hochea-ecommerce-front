@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 export default {
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
@@ -13,7 +15,10 @@ export default {
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-        ]
+        ],
+        script: [
+            { src: 'https://js.stripe.com/v3' },
+        ],
     },
 
     // Global CSS: https://go.nuxtjs.dev/config-css
@@ -26,15 +31,23 @@ export default {
     },
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: [],
+    plugins: [{
+        src: '~/plugins/vue-stripe.js',
+        /*ssr: false*/
+        mode: 'client'
+    }, ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
 
+    env: {
+        STRIPE_PK: process.env.STRIPE_PK
+    },
     // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
     buildModules: [
         // https://go.nuxtjs.dev/typescript
-        '@nuxt/typescript-build'
+        '@nuxt/typescript-build',
+        '@nuxtjs/dotenv'
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
@@ -88,6 +101,7 @@ export default {
     },
     //Disable Nuxt from importing Bootstrap compiled CSS file
     bootstrapVue: {
+        icons: true,
         bootstrapCSS: true,
         bootstrapVueCSS: true,
     },
@@ -95,7 +109,7 @@ export default {
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-        baseURL: 'http://127.0.0.1:8000'
+        baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000'
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build

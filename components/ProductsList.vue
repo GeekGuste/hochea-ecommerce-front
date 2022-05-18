@@ -1,4 +1,5 @@
 <template>
+<div>
   <b-row class="d-flex justify-content-center">
     <div
       class="card m-2 mb-4 shadow-sm"
@@ -55,6 +56,12 @@
       </div>
     </div>
   </b-row>
+  <b-row class="d-flex justify-content-center" v-if="!!productsList.next || !!productsList.previous">
+    <div>
+      <b-pagination-nav :link-gen="linkGen" v-model="currentPage" v-bind:number-of-pages="productsList.count/12" use-router></b-pagination-nav>
+    </div>
+  </b-row>
+</div>
 </template>
 <style lang="css" scoped>
 .card {
@@ -72,27 +79,50 @@ img {
 </style>
 <script lang="ts">
 import Vue from "vue";
+import { PaginatedList } from "../models/pagination";
 import { Product } from "../models/product";
 export default Vue.extend({
   name: "ProductsList",
+  props: {
+    productsList: null,
+  },
   data() {
     return {
-      products: [],
+      //products: [],
+      currentPage: 1
     };
   },
-  created: function () {
-    this.$axios
-      .$get("/api/product/", {
-        params: { is_variant: "False", ...this.$route.query },
-      })
-      .then((products: Product[]) => {
-        this.products = products;
-      });
+  mounted(){
+    this.currentPage = this.$route.query.page || 1;
+  },
+  watch: {
+    "$route.query" (){
+      this.currentPage = this.$route.query.page || 1;
+    }
+  },
+  computed: {
+    products(){
+      return this.productsList?.results;
+    }
   },
   methods: {
     productUrl(product: Product) {
       return `/product/${product.id}`;
     },
+    linkGen(pageNum: Number){
+      let query = this.$route.query;
+      query.page = pageNum;
+      return this.$router.history.current.path + "?" + this.toQueryString(query);
+    },
+    toQueryString(obj: Object){
+      let str = [];
+      for (var p in obj){
+        if (obj.hasOwnProperty(p)) {
+          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+      }
+      return str.join("&");
+    }
   },
 });
 </script>
