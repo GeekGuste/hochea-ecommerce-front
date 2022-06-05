@@ -19,7 +19,7 @@ export default Vue.extend({
   name: "MenuDropdown",
   methods: {
     generateCategoryUrl(tree: any){
-      return `/search?category_id=${tree.id}`;
+      return `/search?category=${tree.id}`;
     }
   }
 });

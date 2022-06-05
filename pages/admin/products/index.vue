@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2><center>Liste des produits</center></h2>
+    <h2><center>Liste des produits  <NuxtLink to="/admin/products/new" class="btn btn-primary">Ajouter</NuxtLink> </center></h2>
     <b-row>
       <div
         class="card col-md-4 col-lg-3 col-sm-6 m-2 mt-2 mb-4 shadow-sm"
@@ -18,12 +18,15 @@
         <div class="card-body d-flex flex-column justify-content-between">
           <div>
             <h4 class="card-title mb-3">{{ product.label }}</h4>
-            <p class="my-2">
-              <span class="text-muted">Categorie: </span>
-              <span class="text-capitalize">
-                {{ product.category.label }}
-              </span>
-            </p>
+            <div v-if="product.categories.length > 0">
+              <p class="my-2">
+                <span class="badge badge-primary text-capitalize p-2 m-1" v-for="category of product.categories" :key="category.id">
+                  <NuxtLink class="product-category" :to="`/search?category=${category.id}`">
+                    {{ category.label }}
+                  </NuxtLink>
+                </span>
+              </p>
+            </div>
             <p class="my-2">
               <span class="text-muted">Price: </span>
               <span v-if="!!product.promo_price" class="text-capitalize">
@@ -62,6 +65,12 @@
     </b-row>
   </div>
 </template>
+<style lang="css" scoped>
+.product-category{
+  color: #fff;
+  text-decoration: none;
+}
+</style>
 <script lang="ts">
 import Vue from "vue";
 import { Category } from "../../../models/category";

@@ -7,7 +7,8 @@
           <b-form-select
             id="input-3"
             required
-            v-model="categorie_id"
+            multiple
+            v-model="selectedCategories"
             :options="categories"
           ></b-form-select>
         </b-form-group>
@@ -96,8 +97,8 @@ export default Vue.extend({
       in_promotion: false,
       categories: [],
       show: true,
-      categorie_id: null,
       image: null,
+      selectedCategories: []
     };
   },
   created: function () {
@@ -105,20 +106,21 @@ export default Vue.extend({
       .$get(`/api/product/${this.$route.params.id}/`)
       .then((product: Product) => {
         this.product = product;
-        this.categorie_id = product.category.id;
+        this.selectedCategories = product.categories.map((category: Category) => { return category.id });
         //check for promotion
         this.in_promotion = (this.product.promo_price > 0);
+        
+        this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
+            this.categories = categoryList.results.map((category) => {
+              if(this.selectedCategories.includes(category.id)){
+                return { value: category.id, text: category.label, selected: "selected" } as never;
+              }
+              else{
+                return { value: category.id, text: category.label } as never;            
+              }
+          });
+        });
       });
-    this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
-        this.categories = categoryList.results.map((category) => {
-          if(category.id == this.product.category.id){
-            return { value: category.id, text: category.label, selected: "selected" } as never;
-          }
-          else{
-            return { value: category.id, text: category.label } as never;            
-          }
-      });
-    });
   },
   methods: {
     onImageSelect(payload: any) {
@@ -134,7 +136,7 @@ export default Vue.extend({
       };
       formData.append("is_active", "true");
       formData.append("label", this.product.label);
-      formData.append("category", this.categorie_id);
+      formData.append("categories", this.selectedCategories);
       formData.append("description", this.product.description);
       formData.append("qte_stock", this.product.qte_stock as any);
       if(!!this.image){

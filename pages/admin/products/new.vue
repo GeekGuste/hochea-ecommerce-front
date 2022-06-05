@@ -2,12 +2,13 @@
   <div class="col-md-6 offset-md-3">
     <b-card header="Ajouter un produit">
       <b-form @submit="onSubmit" @reset="onReset">
-        <ImageUpload :imageUrl="null" @onSelect="onImageSelect" />
+        <ImageUpload ref="uploadComponent" :imageUrl="null" @onSelect="onImageSelect" />
         <b-form-group id="input-group-2" label="catégorie:" label-for="input-3">
           <b-form-select
             id="input-3"
             required
-            v-model="form.category"
+            multiple
+            v-model="form.categories"
             :options="categories"
           ></b-form-select>
         </b-form-group>
@@ -40,7 +41,7 @@
         <b-form-group id="input-group-1" label="Prix:" label-for="input-1">
           <b-form-input
             id="input-1"
-            type="number"
+            type="text"
             min="0"
             step="any"
             v-model="form.price"
@@ -64,7 +65,7 @@
         >
           <b-form-input
             id="input-1"
-            type="number"
+            type="text"
             step="any"
             min="0"
             v-model="form.promo_price"
@@ -92,7 +93,7 @@ export default Vue.extend({
     return {
       form: {
         label: "",
-        category: "",
+        categories: [],
         description: "",
         qte_stock: "100",
         principal_image: "",
@@ -105,16 +106,11 @@ export default Vue.extend({
       show: true,
     };
   },
-  created: function () {
+  mounted: function () {
     this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
         this.categories = categoryList.results.map((category) => {
         return { value: category.id, text: category.label } as never;
       });
-      this.categories.push({
-        value: "",
-        text: "Aucun",
-        selected: "selected",
-      } as never);
     });
   },
   methods: {
@@ -129,17 +125,22 @@ export default Vue.extend({
           "content-type": "multipart/form-data",
         },
       };
-      formData.append("is_active", "true");
+      console.log(this.form.categories);
+      formData.append("is_active", "True");
       formData.append("label", this.form.label);
-      formData.append("category", this.form.category);
+      //console.log(this.form.categories)
+      formData.append("categories", this.form.categories);
       formData.append("description", this.form.description);
       formData.append("qte_stock", this.form.qte_stock);
       formData.append("principal_image", this.form.principal_image);
       formData.append("price", this.form.price);
       formData.append("promo_price", this.form.promo_price);
       this.$axios.$post("/api/product/", formData, config).then((res: any) => {
-        console.log(JSON.stringify(res));
-        alert("Produit ajouté avec succès")
+        //@ts-ignore
+        this.$bvToast.toast("Produit ajouté avec succès", {
+            title: "Succès",
+            variant: "success",
+        });
         this.clearForm();
         this.$router.push('/admin/products/'+res.id+'/editVariant');
       })
@@ -161,6 +162,7 @@ export default Vue.extend({
       this.form.qte_stock = "";
       this.form.price = "";
       this.form.promo_price = "";
+      this.$refs.uploadComponent.clear();
     }
   },
 });

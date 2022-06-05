@@ -127,6 +127,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import { Category } from "../../../../models/category";
 import { PaginatedList } from "../../../../models/pagination";
 import { Product, VariantType } from "../../../../models/product";
 
@@ -200,15 +201,17 @@ export default Vue.extend({
         parent: this.product?.id,
         price: this.product?.price,
         promo_price: this.product?.promo_price,
-        category: this.product?.category.id,
+        categories: this.product?.categories.map((category: Category) => {return category.id}),
         is_variant: true,
         is_active: true,
       } as never);
     },
     updateVariantType() {
-      this.$axios.$patch(`/api/product/${this.$route.params.id}/`, {
-        variant_type: this.form.variant_type,
-      });
+      if(this.form.variant_type != this.product?.variant_type?.id || this.form.variant_type==null){
+        this.$axios.$patch(`/api/product/${this.$route.params.id}/`, {
+          variant_type: this.form.variant_type,
+        });
+      }
     },
     createNewVariant(variant: any, index: number) {
       //Add variant in database
@@ -228,7 +231,11 @@ export default Vue.extend({
       this.$axios
         .$put(`/api/product/${variant.id}/`, variant)
         .then((product: Product) => {
-          alert("Modification réussie");
+          //@ts-ignore
+          this.$bvToast.toast("Modification réussie", {
+              title: "Succès",
+              variant: "success",
+          });
           if (!!this.product?.variants.length)
             this.product.variants[index] = product;
         });

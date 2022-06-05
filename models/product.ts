@@ -11,7 +11,7 @@ export interface Image{
 export interface Product{
     id: number;
     label: string;
-    category: Category;
+    categories: Category[];
     qte_stock: number;
     principal_image: string;
     promo_price: number;

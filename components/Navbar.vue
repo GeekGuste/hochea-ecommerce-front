@@ -2,7 +2,7 @@
   <div>
     <b-navbar toggleable="sm">
       <b-navbar-brand to="/">
-        <img src="~/assets/LOGO_ALPHA.png" width="50" />
+        <img src="~/assets/LOGO_ALPHA.png" width="100px" />
       </b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>

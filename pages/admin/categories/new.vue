@@ -2,6 +2,7 @@
   <div>
     <b-card header="Ajouter une catégorie">
       <b-form @submit="onSubmit" @reset="onReset">
+        <ImageUpload ref="uploadComponent" :imageUrl="null" @onSelect="onImageSelect" />
         <b-form-group
           id="input-group-1"
           label="Nom de la catégorie:"
@@ -31,10 +32,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import ImageUpload from "../../../components/widget/ImageUpload.vue";
 import { Category } from "../../../models/category";
 import { PaginatedList } from "../../../models/pagination";
 
 export default Vue.extend({
+  components: { ImageUpload },
   name: "AdminAddCategoriePage",
   layout: "admin",
   middleware: ["auth"],
@@ -42,13 +45,14 @@ export default Vue.extend({
     return {
       form: {
         label: "",
+        image: "",
         parent: "",
       },
       categories: [],
       show: true,
     };
   },
-  created: function () {
+  mounted: function () {
     this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
       this.categories = categoryList.results.map((category) => {
         return { value: category.id, text: category.label } as never;
@@ -61,12 +65,29 @@ export default Vue.extend({
     });
   },
   methods: {
+    onImageSelect(payload: any) {
+      this.form.image = payload.image;
+    },
     onSubmit(event: any) {
       event.preventDefault();
+      let formData = new FormData();
+      let config = {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      };
+      formData.append("is_active", "true");
+      formData.append("label", this.form.label);
+      formData.append("image", this.form.image);
+      formData.append("parent", this.form.parent);
       this.$axios
-        .$post("/api/category/", { ...this.form, is_active: true })
+        .$post("/api/category/", formData, config)
         .then((res: any) => {
-          alert(JSON.stringify(res));
+          //@ts-ignore
+          this.$bvToast.toast("Catégorie " + this.form.label + " ajoutée avec succès!", {
+            title: "Succès",
+            variant: "success",
+          });
           this.clearForm();
         });
     },
@@ -78,6 +99,8 @@ export default Vue.extend({
       // Reset our form values
       this.form.label = "";
       this.form.parent = "";
+      this.form.image = "";
+      this.$refs.uploadComponent.clear();
     },
   },
 });
