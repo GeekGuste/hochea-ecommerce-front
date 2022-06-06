@@ -1,7 +1,8 @@
 <template>
   <div>
-    <b-card header="Ajouter une catégorie">
+    <b-card header="Modifier une catégorie">
       <b-form @submit="onSubmit">
+        <ImageUpload ref="uploadComponent" :imageUrl="imageUrl" @onSelect="onImageSelect" />
         <b-form-group
           id="input-group-1"
           label="Nom de la catégorie:"
@@ -32,9 +33,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Category } from "../../../../models/category";
+import ImageUpload from "../../../../components/widget/ImageUpload.vue";
 import { PaginatedList } from "../../../../models/pagination";
 
 export default Vue.extend({
+  components: { ImageUpload },
   name: "AdminAddCategoriePage",
   layout: "admin",
   middleware: ["auth"],
@@ -42,17 +45,22 @@ export default Vue.extend({
     return {
       categories: [],
       category: {
+          id: "",
           label: "",
+          image: null,
           parent: null,
       },
       show: true,
+      imageUrl: "",
+      image: null,
     };
   },
-  created: function () {
+  mounted: function () {
     this.$axios
       .$get(`/api/category/${this.$route.params.id}/`)
       .then((category: Category) => {
-        this.category = {label: category.label, parent: category.parent?.id};
+        this.category = {label: category.label, parent: category.parent?.id, image: category.image, id: category.id};
+        this.imageUrl = category.image;
         this.$axios
           .$get("/api/category/")
           .then((categoryList: PaginatedList<Category>) => {
@@ -76,10 +84,27 @@ export default Vue.extend({
       });
   },
   methods: {
+    onImageSelect(payload: any) {
+      this.image = payload.image;
+    },
     onSubmit(event: any) {
       event.preventDefault();
+      let formData = new FormData();
+      let config = {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      };
+      formData.append("is_active", "true");
+      formData.append("label", this.category.label);
+      if(!!this.image){
+        formData.append("image", this.image);
+      }
+      if(!!this.category.parent){
+        formData.append("parent_id", this.category.parent);
+      }
       this.$axios
-        .$patch(`/api/category/${this.$route.params.id}/`, this.category)
+        .$patch(`/api/category/${this.$route.params.id}/`, formData, config)
         .then((res: any) => {
           //@ts-ignore
           this.$bvToast.toast("Catégorie modifiée avec succès", {

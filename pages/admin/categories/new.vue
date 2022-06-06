@@ -79,7 +79,7 @@ export default Vue.extend({
       formData.append("is_active", "true");
       formData.append("label", this.form.label);
       formData.append("image", this.form.image);
-      formData.append("parent", this.form.parent);
+      formData.append("parent_id", this.form.parent);
       this.$axios
         .$post("/api/category/", formData, config)
         .then((res: any) => {
