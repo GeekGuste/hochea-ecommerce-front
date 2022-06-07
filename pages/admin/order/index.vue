@@ -53,6 +53,7 @@
 import Vue from "vue";
 import { PaginatedList } from "../../../models/pagination";
 import { Order } from "../../../models/product";
+
 export default Vue.extend({
   name: "UserOrderPage",
   layout: "admin",
