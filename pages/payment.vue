@@ -308,11 +308,13 @@ export default Vue.extend({
         ...this.form
       })
       .then((paymentResult) => {
-        //@ts-ignore
-        this.$bvToast.toast("Commande enregistrée avec succès", {
-            title: "Succès",
-            variant: "success",
-        });
+        setTimeout(function(){
+          //@ts-ignore
+          this.$bvToast.toast("Commande enregistrée avec succès", {
+              title: "Succès",
+              variant: "success",
+          });
+        }, 3000);
         let orderId = paymentResult.order_id;
         this.$router.push(`/profile/order/${orderId}/details`);
         //On vide le panier
