@@ -175,12 +175,17 @@
                   <div>
                     <center><u>Paiement</u></center>
                    <stripe-element-card
+                      v-if="renderPaymentComponent && !!form.email"
                       ref="paymentRef"
                       :pk="publishableKey"
                       @token="tokenCreated"
                       @error="paymentError"
+                      :hidePostalCode="true"
                       :elements-options="elementsOptions"
                     />
+                    <div v-else>
+                      <b-spinner variant="primary" label="Spinning"></b-spinner>
+                    </div>
                     <br/>
                   </div>
                 </div>
@@ -226,7 +231,8 @@ export default Vue.extend({
       elementsOptions: {
         appearance: {}, // appearance options
       },
-      paymentIntent: null
+      paymentIntent: null,
+      renderPaymentComponent: true
     }
   },
   created: function () {
@@ -240,7 +246,6 @@ export default Vue.extend({
   },
   mounted() {
     console.log(this.items)
-    
   },
   computed: {
     ...mapGetters({
@@ -266,11 +271,13 @@ export default Vue.extend({
       incrementProductQuantity: "cart/incrementProductQuantity",
       reduceProductQuantity: "cart/reduceProductQuantity",
       removeProduct: "cart/removeProduct",
+      clearCart: "cart/clearCart"
     }),
     zoneSelection(e: any){
       let zone = this.deliveryZoneOptions.find((z: any) => z.value == e);
       this.form.zone = zone.text;
       this.form.delivery_charges = zone.delivery_charges;
+      this.generatePaymentIntent();
     },
     async generatePaymentIntent () {
       const paymentIntent = await this.$axios
@@ -279,17 +286,48 @@ export default Vue.extend({
         ...this.form
       }); // this is just a dummy, create your own API call
       this.elementsOptions.clientSecret = paymentIntent.payment_intent.client_secret;
-      console.log(paymentIntent);
-      this.paymentIntent = paymentIntent;
+      this.forcePaymentRerender();
+      this.paymentIntent = paymentIntent.payment_intent;
     },
-    tokenCreated (token) {
-      console.log(token);
+    forcePaymentRerender() {
+      // Remove my-component from the DOM
+      this.renderPaymentComponent = false;
+
+      // If you like promises better you can
+      // also use nextTick this way
+      this.$nextTick().then(() => {
+        // Add the component back in
+        this.renderPaymentComponent = true;
+      });
+    },
+    async tokenCreated (token) {
+      this.$axios
+      .$post("/sales/confirm-payment/", {
+        'intent_id': this.paymentIntent?.id,
+        'items': this.items,
+        ...this.form
+      })
+      .then((paymentResult) => {
+        //@ts-ignore
+        this.$bvToast.toast("Commande enregistrée avec succès", {
+            title: "Succès",
+            variant: "success",
+        });
+        let orderId = paymentResult.order_id;
+        this.$router.push(`/profile/order/${orderId}/details`);
+        //On vide le panier
+        this.clearCart();
+      });
     },
     paymentError(event){
-      console.log(event);      
+      //@ts-ignore
+        this.$bvToast.toast(event.message, {
+            title: "Erreur",
+            variant: "danger",
+        });     
     },
     pay () {
-      this.generatePaymentIntent();
+      //console.log(this.$refs.paymentRef);
       this.$refs.paymentRef.submit();
     },
   },

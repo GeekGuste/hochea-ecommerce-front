@@ -1,13 +1,13 @@
 <template>
   <div>
-    <b-img v-if="!!url" :src="url" fluid alt="Responsive image"></b-img>
+    <b-img v-if="!!url" :src="url" max-width="100%" fluid alt="Responsive image"></b-img>
     <b-form-group label="Image:">
       <b-form-file
         v-model="file"
         :state="Boolean(file)"
         accept="image/*"
         @change="onSelect"
-        :required="!!url"
+        :required="!url"
         placeholder="selectionnez une image"
         drop-placeholder="Cliquer-glisser ici"
       ></b-form-file>
@@ -26,9 +26,14 @@ export default Vue.extend({
   },
   data() {
     return {
-      url: this.imageUrl,
       file: [] as unknown,
+      loadedUrl: "",
     };
+  },
+  computed: {
+    url(){
+      return !!this.loadedUrl ? this.loadedUrl: this?.imageUrl;
+    }
   },
   methods: {
     onSelect(event: any) {
@@ -36,12 +41,15 @@ export default Vue.extend({
       if (!!this.file) {
         let reader = new FileReader();
         reader.onload = (e) => {
-          this.url = e?.target?.result as string;
+          this.loadedUrl = e?.target?.result as string;
         };
         reader.readAsDataURL(this.file as Blob);
         this.$emit("onSelect", { image: this.file });
       }
     },
+    clear: function(){
+      this.loadedUrl = "";
+    }
   },
 });
 </script>

@@ -33,6 +33,9 @@ export const mutations = {
     },
     setProductQuantity(state, payload) {
         state.items.map((product) => product.id == payload.id);
+    },
+    clearCart(state) {
+        state.items = {};
     }
 }
 

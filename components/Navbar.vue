@@ -2,7 +2,7 @@
   <div>
     <b-navbar toggleable="sm">
       <b-navbar-brand to="/">
-        <img src="~/assets/LOGO_ALPHA.png" width="50" />
+        <img src="~/assets/LOGO_ALPHA.png" width="100px" />
       </b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -62,13 +62,12 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style>
   .menu-item a{
     color: #ffffff;
   }
   .menu-item:hover{
     background-color: #007bff;
-    text-decoration: underline;
   }
 </style>
 <script lang="ts">

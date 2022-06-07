@@ -1,14 +1,14 @@
 <template>
   <b-dropdown-item class="menu-item"><NuxtLink :to="generateCategoryUrl(tree)">{{ tree.label }}</NuxtLink></b-dropdown-item>
 </template>
-<style scoped>
+<style>
   .menu-item a{
     color: #ffffff;
   }
   .menu-item:hover{
     background-color: #007bff;
-    text-decoration: underline;
   }
+</style>
 </style>
 <script lang="ts">
 import Vue from "vue";
@@ -19,7 +19,7 @@ export default Vue.extend({
   name: "MenuDropdown",
   methods: {
     generateCategoryUrl(tree: any){
-      return `/search?category_id=${tree.id}`;
+      return `/search?category=${tree.id}`;
     }
   }
 });
