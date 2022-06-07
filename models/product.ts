@@ -1,4 +1,5 @@
 import { Category } from "./category";
+import { User } from "./user";
 
 export interface VariantType{
     id: number;
@@ -33,4 +34,34 @@ export interface CartItem{
     image: string;
     variant_value: string;
     variant_type: string;
+}
+export interface OrderProduct{
+    id: number;
+    product: Product;
+    label: string;
+    price: number;
+    quantity: number;
+    image_url: string;
+}
+
+export interface Order{
+    id: number;
+    order_date: Date;
+    total: number;
+    country: string;
+    zone: string;
+    last_name: string;
+    first_name: string;
+    email: string;
+    address: string;
+    phone_number: string;
+    town: string;
+    postal_code: string;
+    creation_date: Date;
+    payment_date: Date;
+    delivery_charges: number;
+    user: User;
+    is_paid: boolean;
+    is_delivered: boolean;
+    orderProducts: OrderProduct[];
 }

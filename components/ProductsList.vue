@@ -60,6 +60,11 @@
         </div>
       </div>
     </template>
+    <template v-else>
+      <div class="alert alert-danger">
+          <center>Aucun produit ne correspond à votre recherche</center>
+      </div>
+    </template>
   </b-row>
   <b-row class="d-flex justify-content-center" v-if="!!productsList.next || !!productsList.previous">
     <div>

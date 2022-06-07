@@ -62,13 +62,12 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style>
   .menu-item a{
     color: #ffffff;
   }
   .menu-item:hover{
     background-color: #007bff;
-    text-decoration: underline;
   }
 </style>
 <script lang="ts">
