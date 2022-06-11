@@ -53,6 +53,14 @@
             </b-input-group>
           </b-col>
           <b-col sm="6" md="4">
+            <b-input-group
+              prepend="Poids (en grammes)"
+              class="mb-2 mr-sm-2 mb-sm-0"
+            >
+              <b-form-input v-model="variant.weight"></b-form-input>
+            </b-input-group>
+          </b-col>
+          <b-col sm="6" md="4">
             <b-button
               type="button"
               variant="success"
@@ -104,6 +112,14 @@
               class="mb-2 mr-sm-2 mb-sm-0"
             >
               <b-form-input v-model="variant.promo_price"></b-form-input>
+            </b-input-group>
+          </b-col>
+          <b-col sm="6" md="4">
+            <b-input-group
+              prepend="Poids (en grammes)"
+              class="mb-2 mr-sm-2 mb-sm-0"
+            >
+              <b-form-input v-model="variant.weight"></b-form-input>
             </b-input-group>
           </b-col>
           <b-col sm="6" md="4">
@@ -197,6 +213,7 @@ export default Vue.extend({
         label: this.product?.label,
         variant_type: this.product?.variant_type?.id,
         qte_stock: this.product?.qte_stock,
+        weight: this.product?.weight,
         description: this.product?.description,
         parent: this.product?.id,
         price: this.product?.price,

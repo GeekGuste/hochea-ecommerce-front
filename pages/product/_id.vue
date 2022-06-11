@@ -140,7 +140,7 @@ export default Vue.extend({
       addProductToCart : 'cart/addProduct'
     }),
     addProduct(product: Product){
-      let cartItem = {id: product.id, label: product.label, quantity: 1, price: product.promo_price?product.promo_price:product.price, image: this.selectedImageSrc, qte_stock: product.qte_stock, variant_value: product.variant_value, variant_type: this.product?.variant_type?.label} as CartItem;
+      let cartItem = {id: product.id, label: product.label, quantity: 1, price: product.promo_price?product.promo_price:product.price, image: this.selectedImageSrc, qte_stock: product.qte_stock, variant_value: product.variant_value, variant_type: this.product?.variant_type?.label, weight: product.weight} as CartItem;
       this.addProductToCart(cartItem);
       //@ts-ignore
       this.$bvToast.toast("Le produit " + product.label + " a été ajouté au panier avec succès", {

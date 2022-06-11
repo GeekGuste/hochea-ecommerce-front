@@ -1,7 +1,10 @@
 <template>
   <div class="container">
     <div class="text-center mt-5">
-      <h2 v-if="!!items.length"><u>Commande</u></h2>
+      <div v-if="!!items.length">
+        <h2><u>Commande</u></h2>
+        <i>Livraison gratuite dès 35 € d'achats</i>
+      </div>
       <b-alert v-else variant="danger" show>Votre panier est vide</b-alert>
       <br />
       <br />
@@ -168,8 +171,10 @@
                   </b-col>
                 </b-row>
                 <div v-if="form.delivery_charges != null">
-                  <h3><b>Frais de livraison:</b> {{ form.delivery_charges }} €</h3>
+                  <h3><b>Frais de livraison:</b> {{ realDeliveryCharges }} €</h3>
                   <h3><b>Total commande:</b> {{totalCommande}} €</h3>
+                  <i>Livraison gratuite dès 35 € d'achats</i>
+                  <br/>
                 </div>
                 <div>
                   <div>
@@ -251,9 +256,26 @@ export default Vue.extend({
     ...mapGetters({
       items: "cart/items",
       cartTotalPrice: "cart/cartTotalPrice",
+      cartTotalWeight: "cart/cartTotalWeight",
     }),
+    realDeliveryCharges(){
+      if(parseFloat(this.cartTotalPrice) > 35){
+        return 0;
+      }
+      else{
+        let kgDeliveryCharge = (!!this.form.delivery_charges?parseFloat(this.form.delivery_charges):0);
+        if(this.cartTotalWeight <= 1000){
+          //frais par défaut si inférieur à 1kg
+          return kgDeliveryCharge;
+        }
+        else{
+          let nbKg = Math.floor(this.cartTotalWeight/1000);
+          return kgDeliveryCharge + (1 * (nbKg - 1));
+        }
+      }
+    },
     totalCommande(){
-      return parseFloat(this.cartTotalPrice) + (!!this.form.delivery_charges?parseFloat(this.form.delivery_charges):0);
+      return parseFloat(this.cartTotalPrice) + this.realDeliveryCharges;
     },
     isInvalid(){
       return (this.form.email == "" || 
@@ -308,17 +330,15 @@ export default Vue.extend({
         ...this.form
       })
       .then((paymentResult) => {
-        setTimeout(function(){
-          //@ts-ignore
-          this.$bvToast.toast("Commande enregistrée avec succès", {
-              title: "Succès",
-              variant: "success",
-          });
-        }, 3000);
+        //@ts-ignore
+        this.$bvToast.toast("Commande enregistrée avec succès", {
+            title: "Succès",
+            variant: "success",
+        });
         let orderId = paymentResult.order_id;
-        this.$router.push(`/profile/order/${orderId}/details`);
         //On vide le panier
         this.clearCart();
+        this.$router.push(`/profile/order/${orderId}/details`);
       });
     },
     paymentError(event){

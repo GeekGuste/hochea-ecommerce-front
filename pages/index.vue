@@ -4,6 +4,17 @@
       <slider />
     </b-row>
     <b-row>
+      <b-col md="8" offset-md="2" lg="6" offset-lg="3">
+        <b-row class="d-flex justify-content-center">
+          <b-col  v-for="cat in categoryTree" :key="cat.id" md="3" sm="4">
+            <b-img :src="cat.image" fluid :alt="cat.label"></b-img>
+            <center><b>{{ cat.label }}</b></center>
+            <br>
+          </b-col>
+        </b-row>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-col sm="12">
         <h2 v-if="!!productsList && !!productsList.count && productsList.count > 0"><center>Nos derniers produits</center></h2>
         <ProductsList :productsList="productsList" />

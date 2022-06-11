@@ -7,7 +7,7 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Zone</th>
-            <th scope="col">Frais de livraison</th>
+            <th scope="col">Frais de livraison(au kg)</th>
             <th scope="col">Action</th>
           </tr>
         </thead>

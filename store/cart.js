@@ -1,5 +1,5 @@
 export const state = () => ({
-    items: [ /*{id, label, image, price, qte_stock, quantity, variant_value}*/ ]
+    items: [ /*{id, label, image, price, qte_stock, quantity, variant_value, weight}*/ ]
 })
 
 export const getters = {
@@ -9,6 +9,11 @@ export const getters = {
     cartTotalPrice: (state) => {
         return state.items.reduce((total, product) => {
             return total + product.price * product.quantity
+        }, 0);
+    },
+    cartTotalWeight: (state) => {
+        return state.items.reduce((total, product) => {
+            return total + product.weight
         }, 0);
     },
     cartNumberOfProducts: (state) => {
@@ -35,7 +40,7 @@ export const mutations = {
         state.items.map((product) => product.id == payload.id);
     },
     clearCart(state) {
-        state.items = {};
+        state.items = [];
     }
 }
 

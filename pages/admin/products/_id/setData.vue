@@ -48,6 +48,16 @@
             required
           ></b-form-input>
         </b-form-group>
+        <b-form-group id="input-group-1" label="Poids (en grammes):" label-for="input-1">
+          <b-form-input
+            id="input-1"
+            type="number"
+            min="0"
+            step="any"
+            v-model="product.weight"
+            required
+          ></b-form-input>
+        </b-form-group>
         <b-form-checkbox
           id="checkbox-1"
           v-model="in_promotion"
@@ -136,6 +146,7 @@ export default Vue.extend({
       };
       formData.append("is_active", "true");
       formData.append("label", this.product.label);
+      formData.append("weight", this.product.weight);
       formData.append("categories", this.selectedCategories);
       formData.append("description", this.product.description);
       formData.append("qte_stock", this.product.qte_stock as any);

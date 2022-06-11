@@ -14,6 +14,7 @@ export interface Product{
     label: string;
     categories: Category[];
     qte_stock: number;
+    weight: number;
     principal_image: string;
     promo_price: number;
     price: string;
