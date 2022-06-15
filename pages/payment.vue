@@ -3,7 +3,7 @@
     <div class="text-center mt-5">
       <div v-if="!!items.length">
         <h2><u>Commande</u></h2>
-        <i>Livraison gratuite dès 35 € d'achats</i>
+        <i>Livraison gratuite dès 49 € d'achats</i>
       </div>
       <b-alert v-else variant="danger" show>Votre panier est vide</b-alert>
       <br />
@@ -173,7 +173,7 @@
                 <div v-if="form.delivery_charges != null">
                   <h3><b>Frais de livraison:</b> {{ realDeliveryCharges }} €</h3>
                   <h3><b>Total commande:</b> {{totalCommande}} €</h3>
-                  <i>Livraison gratuite dès 35 € d'achats</i>
+                  <i>Livraison gratuite dès 49 € d'achats</i>
                   <br/>
                 </div>
                 <div>
@@ -196,6 +196,12 @@
                 </div>
                 <b-button variant="warning" @click="pay" :disabled="isInvalid" class="text-white float-right"
                 >Commander &gt;</b-button>
+                <paypal-checkout
+                    amount="10.00"
+                    currency="EUR"
+                    :client="paypal"
+                    env="sandbox">
+                  </paypal-checkout>
             </div>
           </div>
         </b-col>
@@ -237,7 +243,11 @@ export default Vue.extend({
         appearance: {}, // appearance options
       },
       paymentIntent: null,
-      renderPaymentComponent: true
+      renderPaymentComponent: true,
+      paypal: {
+        sandbox: 'sb-hfxls17142188@business.example.com',
+        production: 'ASRTJNDV9rVTw7S8emAMLuclQqxOOzpR2gsiR7gvdX0bWqdty6LGvnInHKTdkvd-0pAzTKxZZAWdJI2t'
+      }
     }
   },
   created: function () {
@@ -259,7 +269,7 @@ export default Vue.extend({
       cartTotalWeight: "cart/cartTotalWeight",
     }),
     realDeliveryCharges(){
-      if(parseFloat(this.cartTotalPrice) > 35){
+      if(parseFloat(this.cartTotalPrice) > 49){
         return 0;
       }
       else{

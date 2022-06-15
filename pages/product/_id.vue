@@ -122,7 +122,8 @@ export default Vue.extend({
         this.selectedProduct = product;
         this.selectedImageSrc = product.principal_image;
         this.images = product.images;
-        console.log(this.selectedProduct);
+        //Add principal image at top list
+        this.images.unshift({id: product.id, photo: product.principal_image});
       });
   },
   computed: {

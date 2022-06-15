@@ -9,9 +9,9 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="m-auto">
-          <b-nav-form class="my-0">
+          <b-nav-form v-on:submit.prevent="disableForm" class="my-0">
             <b-input-group>
-              <b-form-input v-model="searchText" @keydown.enter="search" placeholder="Rechercher ici"></b-form-input>
+              <b-form-input v-model="searchText"  @keydown.enter="search" placeholder="Rechercher ici"></b-form-input>
               <b-input-group-append @click="search">
                 <b-button class="text-white" variant="warning"
                   ><b-icon icon="search"></b-icon></b-button
@@ -104,6 +104,9 @@ export default Vue.extend({
     },
     search(){
       this.$router.push({path:'/search/', query: { search_text: this.searchText}});
+    },
+    disableForm(e){
+      e.preventDefault();
     }
   },
 });

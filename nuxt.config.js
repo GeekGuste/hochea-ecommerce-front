@@ -18,6 +18,7 @@ export default {
         ],
         script: [
             { src: 'https://js.stripe.com/v3' },
+            { src: 'https://unpkg.com/vue-paypal-checkout@2.0.0/dist/vue-paypal-checkout.min.js' }
         ],
     },
 
@@ -33,6 +34,7 @@ export default {
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [{
         src: '~/plugins/vue-stripe.js',
+        src: '~/plugins/paypal.client.js',
         /*ssr: false*/
         mode: 'client'
     }, ],
@@ -116,6 +118,7 @@ export default {
     build: {
         babel: {
             compact: true
-        }
+        },
+        vendor: ['vue-paypal-checkout']
     }
 }
