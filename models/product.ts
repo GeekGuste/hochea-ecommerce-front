@@ -60,6 +60,7 @@ export interface Order{
     postal_code: string;
     creation_date: Date;
     payment_date: Date;
+    mode_paiement: string;
     delivery_charges: number;
     user: User;
     is_paid: boolean;

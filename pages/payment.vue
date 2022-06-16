@@ -197,9 +197,11 @@
                 <b-button variant="warning" @click="pay" :disabled="isInvalid" class="text-white float-right"
                 >Commander &gt;</b-button>
                 <paypal-checkout
-                    amount="10.00"
+                    :amount="totalCommande+''"
                     currency="EUR"
                     :client="paypal"
+                    locale="fr_FR"
+                    @payment-completed="paypalPaymentCompleted"
                     env="sandbox">
                   </paypal-checkout>
             </div>
@@ -245,8 +247,8 @@ export default Vue.extend({
       paymentIntent: null,
       renderPaymentComponent: true,
       paypal: {
-        sandbox: 'sb-hfxls17142188@business.example.com',
-        production: 'ASRTJNDV9rVTw7S8emAMLuclQqxOOzpR2gsiR7gvdX0bWqdty6LGvnInHKTdkvd-0pAzTKxZZAWdJI2t'
+        sandbox: 'ASRTJNDV9rVTw7S8emAMLuclQqxOOzpR2gsiR7gvdX0bWqdty6LGvnInHKTdkvd-0pAzTKxZZAWdJI2t',
+        production: 'Advewyh3-LKU6UwDhw6OAnzDATucHZRuIQKqMwdEVFnJfNzfI0FCjjUs_06qq9gOgG_f2P-KWNgsqlWu'
       }
     }
   },
@@ -260,7 +262,7 @@ export default Vue.extend({
       });
   },
   mounted() {
-    console.log(this.items)
+    //console.log(this.items)
   },
   computed: {
     ...mapGetters({
@@ -354,7 +356,7 @@ export default Vue.extend({
     paymentError(event){
       //@ts-ignore
         this.$bvToast.toast(event.message, {
-            title: "Erreur",
+          title: "Erreur",
             variant: "danger",
         });     
     },
@@ -362,6 +364,17 @@ export default Vue.extend({
       //console.log(this.$refs.paymentRef);
       this.$refs.paymentRef.submit();
     },
+    paypalPaymentCompleted(event){
+      console.log(event);
+      this.$axios
+      .$post("/sales/save-paypal-order/", {
+        'items': this.items,
+        ...this.form
+      })
+      .then((paymentResult) => {
+        
+      });
+    }
   },
 });
 </script>
