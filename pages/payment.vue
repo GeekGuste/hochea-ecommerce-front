@@ -247,8 +247,8 @@ export default Vue.extend({
       paymentIntent: null,
       renderPaymentComponent: true,
       paypal: {
-        sandbox: 'ASRTJNDV9rVTw7S8emAMLuclQqxOOzpR2gsiR7gvdX0bWqdty6LGvnInHKTdkvd-0pAzTKxZZAWdJI2t',
-        production: 'Advewyh3-LKU6UwDhw6OAnzDATucHZRuIQKqMwdEVFnJfNzfI0FCjjUs_06qq9gOgG_f2P-KWNgsqlWu'
+        sandbox: 'AZV0n5-qou-sbYQo1mRQHvMd8UW6_BoY3g9OKj_ltgDV7iMIPRxwWdDu_W7aKJ_8wkXeYSZPQKlT-GRO',
+        production: 'AUGuYYnINwWo5dsE4BjvvDBZpQAGG0CVt3lUDMYG1JcoNP0QWrFQMWrPaWBeOdgUbyFQO9E3U5friPj-'
       }
     }
   },
