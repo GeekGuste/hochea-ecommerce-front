@@ -218,7 +218,7 @@ export default Vue.extend({
         parent: this.product?.id,
         price: this.product?.price,
         promo_price: this.product?.promo_price,
-        categories: this.product?.categories.map((category: Category) => {return category.id}),
+        categories: this.product?.categories.map((category: Category) => {return category.id}).join(','),
         is_variant: true,
         is_active: true,
       } as never);
@@ -246,7 +246,7 @@ export default Vue.extend({
     updateVariant(variant: any, index: number) {
       //Add variant in database
       this.$axios
-        .$put(`/api/product/${variant.id}/`, variant)
+        .$patch(`/api/product/${variant.id}/`, {variant_value: variant.variant_value, qte_stock: variant.qte_stock, price: variant.price,  promo_price: variant.promo_price, weight: variant.weight})
         .then((product: Product) => {
           //@ts-ignore
           this.$bvToast.toast("Modification réussie", {
