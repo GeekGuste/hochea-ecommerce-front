@@ -81,6 +81,15 @@ export default Vue.extend({
       query.page = pageNum;
       return this.$router.history.current.path + "?" + this.toQueryString(query);
     },
+    toQueryString(obj: Object){
+      let str = [];
+      for (var p in obj){
+        if (obj.hasOwnProperty(p)) {
+          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+      }
+      return str.join("&");
+    }
   },
 });
 </script>

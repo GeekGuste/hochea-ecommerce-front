@@ -179,31 +179,59 @@
                 <div>
                   <div>
                     <center><u>Paiement</u></center>
-                   <stripe-element-card
-                      v-if="renderPaymentComponent && !!form.email"
-                      ref="paymentRef"
-                      :pk="publishableKey"
-                      @token="tokenCreated"
-                      @error="paymentError"
-                      :hidePostalCode="true"
-                      :elements-options="elementsOptions"
-                    />
-                    <div v-else>
-                      <b-spinner variant="primary" label="Spinning"></b-spinner>
+                    <div class="container">
+                      <b-form-group label="Mode de paiement">
+                        <b-form-radio v-model="form.paymentMode" name="payment-mode" value="card">
+                          <b-img src="~/assets/images/card.png"></b-img> Carte bancaire
+                        </b-form-radio>
+                        <b-form-radio v-model="form.paymentMode" name="payment-mode" value="paypal">
+                          <b-img src="~/assets/images/paypal.png"></b-img> Paypal
+                        </b-form-radio>
+                        <b-form-radio v-model="form.paymentMode" name="payment-mode" value="scalapay">
+                          <b-img src="~/assets/images/scalapay.png"></b-img> Scalapay
+                        </b-form-radio>
+                        <b-form-radio v-model="form.paymentMode" name="payment-mode" value="klarna">
+                          Klarna
+                        </b-form-radio>
+                      </b-form-group>
+                    </div>
+                    <div class="container" v-if="isInvalid">
+                      <i>Veuillez remplir tous les champs avant de payer</i>
+                    </div>
+                    <div class="container" v-if="form.paymentMode == 'card'">
+                      <stripe-element-card
+                          v-if="renderPaymentComponent && !!form.email"
+                          ref="paymentRef"
+                          :pk="publishableKey"
+                          @token="tokenCreated"
+                          @error="paymentError"
+                          :hidePostalCode="true"
+                          :elements-options="elementsOptions"
+                        />
+                        <br>
+                        <b-button variant="warning" @click="pay" :disabled="isInvalid" class="text-white float-right"
+                        >Commander &gt;</b-button>
+                    </div>
+                    <div class="container" v-if="form.paymentMode == 'paypal' && !isInvalid">
+                      <paypal-checkout
+                        :amount="totalCommande+''"
+                        currency="EUR"
+                        :client="paypal"
+                        locale="fr_FR"
+                        :button-style="paypalStyle"
+                        @payment-completed="paypalPaymentCompleted"
+                        env="sandbox">
+                      </paypal-checkout>
+                    </div>
+                    <div class="container" v-if="form.paymentMode == 'klarna' && !isInvalid">
+                      
+                    </div>
+                    <div class="container" v-if="!!isInvalid">
+                        <b-spinner variant="primary" label="Spinning"></b-spinner>
                     </div>
                     <br/>
                   </div>
                 </div>
-                <b-button variant="warning" @click="pay" :disabled="isInvalid" class="text-white float-right"
-                >Commander &gt;</b-button>
-                <paypal-checkout
-                    :amount="totalCommande+''"
-                    currency="EUR"
-                    :client="paypal"
-                    locale="fr_FR"
-                    @payment-completed="paypalPaymentCompleted"
-                    env="sandbox">
-                  </paypal-checkout>
             </div>
           </div>
         </b-col>
@@ -238,6 +266,7 @@ export default Vue.extend({
         deliveryZoneInfo: "",
         zone: "",
         delivery_charges: null,
+        paymentMode: "card"
       },
       deliveryZoneOptions: [],
       publishableKey: "pk_test_51Kpr85DP9ndu4EFOVJwmW613vPQLBznGcMK3uCTRb9P3BukYWtvjPLPRE6Ro1UiQUj4iyS48PZKjgGfmP14BBZpA00zasiO8k7",
@@ -249,6 +278,12 @@ export default Vue.extend({
       paypal: {
         sandbox: 'AZV0n5-qou-sbYQo1mRQHvMd8UW6_BoY3g9OKj_ltgDV7iMIPRxwWdDu_W7aKJ_8wkXeYSZPQKlT-GRO',
         production: 'AUGuYYnINwWo5dsE4BjvvDBZpQAGG0CVt3lUDMYG1JcoNP0QWrFQMWrPaWBeOdgUbyFQO9E3U5friPj-'
+      },
+      paypalStyle: {
+        label: 'checkout',
+        size:  'medium',
+        shape: 'pill',
+        color: 'gold'
       }
     }
   },
@@ -342,16 +377,19 @@ export default Vue.extend({
         ...this.form
       })
       .then((paymentResult) => {
-        //@ts-ignore
-        this.$bvToast.toast("Commande enregistrée avec succès", {
-            title: "Succès",
-            variant: "success",
-        });
-        let orderId = paymentResult.order_id;
-        //On vide le panier
-        this.clearCart();
-        this.$router.push(`/profile/order/${orderId}/details`);
+        this.handleSuccessfulPayment(paymentResult);
       });
+    },
+    handleSuccessfulPayment(result: any){
+      //@ts-ignore
+      this.$bvToast.toast("Commande enregistrée avec succès", {
+          title: "Succès",
+          variant: "success",
+      });
+      let orderId = result.order_id;
+      //On vide le panier
+      this.clearCart();
+      setTimeout(() => this.$router.push(`/profile/order/${orderId}/details`), 3000)
     },
     paymentError(event){
       //@ts-ignore
@@ -371,8 +409,8 @@ export default Vue.extend({
         'items': this.items,
         ...this.form
       })
-      .then((paymentResult) => {
-        
+      .then((result) => {
+        this.handleSuccessfulPayment(result);
       });
     }
   },
