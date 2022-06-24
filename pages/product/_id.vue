@@ -11,7 +11,7 @@
         ></b-img>
         <div class="d-flex flex-wrap" v-if="!!images.length">
           <b-img
-            class="m-1"
+            class="m-1 option-image"
             v-for="image in images"
             style="cursor: pointer"
             :key="image.id"
@@ -89,6 +89,12 @@
   max-height: 500px;
   /*min-height: 360px;*/
   max-width: 502px;
+}
+.option-image{
+  cursor: pointer;
+}
+.option-image:hover{
+  border: 2px solid #ffc107;
 }
 .price-container {
   font-size: 2em;
