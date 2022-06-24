@@ -60,7 +60,6 @@ export default Vue.extend({
   methods: {
     onSubmit(event) {
       event.preventDefault();
-      alert(JSON.stringify(this.form));
        this.$axios
         .$post("/sales/contact/", this.form)
         .then((result) => {
