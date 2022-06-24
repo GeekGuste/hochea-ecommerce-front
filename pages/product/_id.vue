@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row class="product-container ml-1">
+    <b-row class="product-container">
       <b-col class="d-flex flex-column image-container" sm="12" md="5">
         <b-img
           v-if="!!product"
@@ -80,11 +80,15 @@
   outline: dashed red;
 }
 .product-container {
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 40px;
+  max-width: 1200px;
 }
 .principal {
   max-height: 500px;
-  min-height: 360px;
+  /*min-height: 360px;*/
+  max-width: 502px;
 }
 .price-container {
   font-size: 2em;
