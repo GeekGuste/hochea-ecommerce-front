@@ -58,6 +58,7 @@
           :key="category.id"
           :tree="category"
         />
+        <b-dropdown-item class="text-white menu-item"><NuxtLink to="/contact">Contact</NuxtLink></b-dropdown-item>
       </b-nav>
     </div>
   </div>
