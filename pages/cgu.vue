@@ -1,5 +1,5 @@
 <template>
   <div class="container">
-    <h1><center>Conditions générales du site</center></h1>
+    <h1><center>Conditions générales d'utilisation</center></h1>
   </div>
 </template>
