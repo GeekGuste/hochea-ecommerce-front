@@ -101,6 +101,12 @@ footer{
   width: 100%; 
   padding-top: 10px;
 }
+@media screen and (min-width: 600px) {
+  .max-1200{
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
 </style>
 <script lang="ts">
 import Vue from "vue";
