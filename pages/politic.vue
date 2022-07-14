@@ -33,7 +33,7 @@
     <br>
     <h2>Clause n°3 : Commande</h2>
     <p>
-      En validant votre commande en ligne, vous acceptez sans condition et vous vous engagez à respecter, dans les rapports avec kiny.paris.com, les présentes Conditions Générales de Vente.<br>
+      En validant votre commande en ligne, vous acceptez sans condition et vous vous engagez à respecter, dans les rapports avec hocheacreation.fr, les présentes Conditions Générales de Vente.<br>
       Si vous êtes en désaccord avec des termes indiqués dans les présentes Conditions Générales de Vente, nous vous invitons à ne pas confirmer votre formulaire de commande pour l'achat de produits sur hocheacreation.fr </br>
       En transmettant votre formulaire de commande, vous confirmez connaître et accepter les présentes Conditions Générales de Vente sans réserve.
     </p>
@@ -50,7 +50,7 @@
       En cas de questions sur les produits, vous pouvez naturellement prendre contact avec le Service Clients.<br>
       Toute commande par Internet suppose que vous fournissiez au moment de ladite commande des informations exactes et complètes. Les informations demandées porteront sur : civilité, nom, prénom, téléphone, adresse email, adresse de facturation et de livraison.<br>
       Une fois terminée, votre commande est transmise directement pour traitement.<br>
-      Kiny Paris confirmera la réception de votre commande par l'envoi d'un courrier électronique. Si vous ne recevez pas de confirmation, veuillez nous le signaler en contactant le service client.<br>
+      Hochea Creation confirmera la réception de votre commande par l'envoi d'un courrier électronique. Si vous ne recevez pas de confirmation, veuillez nous le signaler en contactant le service client.<br>
       Un délai de préparation de la commande de 3 à 7 jours est estimé pour chaque commande.<br>
       Ce délai de préparation de la commande est différent du délai de livraison qui est de 3 jours à plus selon votre région ou pays.<br>
       Vous pourrez la modifier ou l'annuler uniquement en contactant le Service Clients par téléphone ou par email.
