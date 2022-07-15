@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-card header="Ajouter une zone de livraison">
+    <b-card header="Modifier une zone de livraison">
       <b-form @submit="onSubmit">
         <b-form-group
           id="input-group-1"
