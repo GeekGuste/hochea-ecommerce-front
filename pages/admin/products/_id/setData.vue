@@ -123,10 +123,10 @@ export default Vue.extend({
         this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
             this.categories = categoryList.results.map((category) => {
               if(this.selectedCategories.includes(category.id)){
-                return { value: category.id, text: category.label, selected: "selected" } as never;
+                return { value: category.id, text: (category.label + (category.parent?"(" + category.parent.label + ")": "")), selected: "selected" } as never;
               }
               else{
-                return { value: category.id, text: category.label } as never;            
+                return { value: category.id, text: (category.label + (category.parent?"(" + category.parent.label + ")": "")) } as never;            
               }
           });
         });

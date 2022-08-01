@@ -120,7 +120,7 @@ export default Vue.extend({
   mounted: function () {
     this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
         this.categories = categoryList.results.map((category) => {
-        return { value: category.id, text: category.label } as never;
+        return { value: category.id, text: (category.label + (category.parent?"(" + category.parent.label + ")": "")) } as never;
       });
     });
   },
@@ -136,7 +136,6 @@ export default Vue.extend({
           "content-type": "multipart/form-data",
         },
       };
-      console.log(this.form.categories);
       formData.append("is_active", "True");
       formData.append("label", this.form.label);
       formData.append("weight", this.form.weight      );
