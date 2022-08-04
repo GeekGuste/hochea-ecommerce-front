@@ -68,7 +68,7 @@
   </b-row>
   <b-row class="d-flex justify-content-center" v-if="!!productsList.next || !!productsList.previous">
     <div>
-      <b-pagination-nav :link-gen="linkGen" v-model="currentPage" v-bind:number-of-pages="productsList.count/12" use-router></b-pagination-nav>
+      <b-pagination-nav :link-gen="linkGen" v-model="currentPage" v-bind:number-of-pages="numberOfPages"></b-pagination-nav>
     </div>
   </b-row>
 </div>
@@ -117,6 +117,9 @@ export default Vue.extend({
   computed: {
     products(){
       return this.productsList?.results;
+    },
+    numberOfPages(){
+      return Math.ceil(this.productsList?.count/12);
     }
   },
   methods: {

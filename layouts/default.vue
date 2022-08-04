@@ -101,7 +101,7 @@ footer{
   width: 100%; 
   padding-top: 10px;
 }
-@media screen and (min-width: 600px) {
+@media screen and (max-width: 600px) {
   .max-1200{
     padding-left: 0px;
     padding-right: 0px;
