@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar/>
-    <div class="container-fluid max-1200">
+  <div class="container-fluid max-1200">
       <Nuxt />
     </div>
     <br/>
@@ -103,8 +103,8 @@ footer{
 }
 @media screen and (max-width: 600px) {
   .max-1200{
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: initial;
+    padding-right: initial;
   }
 }
 </style>
