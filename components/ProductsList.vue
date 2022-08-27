@@ -10,7 +10,7 @@
         <div class="card-img">
           <img
             :src="product.principal_image"
-            class="card-img-top img-fluid"
+            class="card-img-top img-fluid product-image"
             :alt="product.label"
           />
         </div>
@@ -85,6 +85,7 @@ img {
   height: 100%;
   width: 100%;
   transform: scale(0.75);
+  object-fit: contain;
 }
 .product-category{
   color: #fff;

@@ -37,7 +37,7 @@
             </table>
             <b-row class="d-flex justify-content-center" v-if="!!orderList.next || !!orderList.previous">
                 <div>
-                    <b-pagination-nav :link-gen="linkGen" v-model="currentPage" v-bind:number-of-pages="orderList.count/12" use-router></b-pagination-nav>
+                    <b-pagination-nav :link-gen="linkGen" v-model="currentPage" v-bind:number-of-pages="orderList.count/12"></b-pagination-nav>
                 </div>
             </b-row>
     </div>
@@ -62,17 +62,21 @@ export default Vue.extend({
     };
   },
   mounted: function () {
-    this.$axios.$get("/api/order/").then((orderList: PaginatedList<Order>) => {
-      this.orderList = orderList;
-    });
     this.currentPage = this.$route.query.page || 1;
+    this.loadOrders();
   },
   watch: {
     "$route.query" (){
       this.currentPage = this.$route.query.page || 1;
+      this.loadOrders();
     }
   },
   methods: {
+    loadOrders(){
+      this.$axios.$get(`/api/order/?page=${this.currentPage}`).then((orderList: PaginatedList<Order>) => {
+        this.orderList = orderList;
+      });
+    },
     formatDate(dateString: string){
         return new Date(dateString).toLocaleString("fr-FR");
     },

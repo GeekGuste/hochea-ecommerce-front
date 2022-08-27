@@ -12,13 +12,13 @@
       Compte tenu de la politique commerciale décrite ci-dessus, Hochea Creation se réserve le droit décliner les commandes provenant de toute personne qui ne serait pas un "consommateur final" ou à des commandes non conformes à sa politique commerciale telle que définie dans les présentes. <br>
       Les conditions générales de vente pourront être modifiées et notamment en considération d'éventuels changements normatifs. <br>
       Les nouvelles conditions générales de vente s'appliqueront à leur date de publication sur hocheacreation.fr. <br>
-      Vous pouvez prendre connaissance à tout moment de la version des Conditions Générales de Vente en vigueur en cliquant sur le lien « CGV ». En outre, à chaque passage de commande sur le site hocheacreation.fr, il vous sera demandé de confirmer votre acceptation des présentes Conditions Générales de Vente en vigueur à la date de passation de votre commande.
+      Vous pouvez prendre connaissance à tout moment de la version des Conditions Générales de Vente en vigueur en cliquant sur le lien <nuxt-link to="/politic">« CGV »</nuxt-link>. En outre, à chaque passage de commande sur le site hocheacreation.fr, il vous sera demandé de confirmer votre acceptation des présentes Conditions Générales de Vente en vigueur à la date de passation de votre commande.
     </p>
     <br>
     <h2>Clause n°1 : Prix</h2>
     <p>
       Les prix de nos produits sont indiqués en Euros toutes taxes comprises hors participation aux frais de traitement et d'expédition.<br>
-      En cas de commande vers un pays autre que la France métropolitaine, vous êtes l'importateur du ou des produits concernés. Pour tous les produits expédiés hors Union Européenne et DOM-TOM, des droits de douane, taxes locales, droits d'importation ou taxes d'Etat, sont susceptibles d'être exigés. Ces droits et sont dus par le « consommateur final ».<br>
+      En cas de commande vers un pays autre que la France métropolitaine, vous êtes l'importateur du ou des produits concernés. Pour tous les produits expédiés hors Union Européenne et DOM-TOM, des droits de douane, taxes locales, droits d'importation ou taxes d'Etat, sont susceptibles d'être exigés. Ces droits seront à la charge du « consommateur final ».<br>
       Ils seront à votre charge et relèvent de votre entière responsabilité tant en termes de déclaration que de paiement aux autorités et organismes compétents de votre pays. Nous vous conseillons de vous renseigner sur ces aspects auprès des autorités locales de votre pays.<br>
       Toutes les commandes doivent être payées en Euros.<br>
       hocheacreation.fr se réserve le droit de modifier les prix à tout moment mais les produits seront facturés sur la base des tarifs en vigueur au moment de l'enregistrement des commandes.
@@ -26,7 +26,7 @@
     <br>
     <h2>Clause n°2 : Disponibilités</h2>
     <p>
-      Les produits Hochea Creation sont confectionnés artisanalement et produit à la commandes dans la limite des stocks disponibles des matières premières.<br>
+      Les produits Hochea Creation sont confectionnés artisanalement et produits à la commandes dans la limite des stocks disponibles des matières premières.<br>
       Dans le cas d'une indisponibilité de produit après passation de votre commande, nous nous engageons à vous tenir informés par email ou par téléphone dans les meilleurs délais.<br>
       hocheacreation.fr n'encourt aucune responsabilité en cas de rupture de stock ou d'indisponibilité des produits.
     </p>
@@ -41,8 +41,8 @@
     <br>
     <h2>Clause n°4 : Processus de commande</h2>
     <p>
-      A tout moment choisissez une catégorie (Femme, Homme) et les sous catégories (bijoux wax, colliers wax).<br>
-      Visualisez le(s) produits(s) qui vous intéresse (nt). En cliquant sur un produits, vous pourrez accéder à la fiche produit (toutes les images, composition, tailles disponibles et prix).<br>
+      A tout moment choisissez <span style="color: red; text-decoration: underline">une catégorie (Femme, Homme) et les sous catégories (bijoux wax, colliers wax)</span>.<br>
+      <span style="color: red; text-decoration: underlined">Visualisez le(s) produits(s) qui vous intéresse (nt). En cliquant sur un produits</span>, vous pourrez accéder à la fiche produit (toutes les images, composition, tailles disponibles et prix).<br>
       Sélectionnez ainsi l'article qui vous intéresse et ajoutez-le au panier. Vous pouvez ensuite « continuer vos achats » ou « valider votre commande ».<br>
       Si vous souhaitez confirmer votre commande sur hocheacreation.fr, vous pouvez allez dans votre panier. Vérifiez l'exactitude de votre sélection avant de confirmer votre commande.<br>
       Si tous les efforts sont mis en œuvre pour assurer que la couleur et le motif des produits dont les photos sont affichées sur le site hocheacreation.fr soient fidèles aux produits originaux, des variations peuvent intervenir, notamment en raison du caractère artisanale de leur fabrication et des limitations de rendu des couleurs selon les équipements informatiques.<br>
@@ -50,7 +50,7 @@
       En cas de questions sur les produits, vous pouvez naturellement prendre contact avec le Service Clients.<br>
       Toute commande par Internet suppose que vous fournissiez au moment de ladite commande des informations exactes et complètes. Les informations demandées porteront sur : civilité, nom, prénom, téléphone, adresse email, adresse de facturation et de livraison.<br>
       Une fois terminée, votre commande est transmise directement pour traitement.<br>
-      Hochea Creation confirmera la réception de votre commande par l'envoi d'un courrier électronique. Si vous ne recevez pas de confirmation, veuillez nous le signaler en contactant le service client.<br>
+      <span style="color: red; text-decoration: underline">Hochea Creation confirmera la réception de votre commande par </span>l'envoi d'un courrier électronique. Si vous ne recevez pas de confirmation, veuillez nous le signaler en contactant le service client.<br>
       Un délai de préparation de la commande de 3 à 7 jours est estimé pour chaque commande.<br>
       Ce délai de préparation de la commande est différent du délai de livraison qui est de 3 jours à plus selon votre région ou pays.<br>
       Vous pourrez la modifier ou l'annuler uniquement en contactant le Service Clients par téléphone ou par email.
@@ -59,13 +59,13 @@
     <h2>Clause n°5 : Livraison</h2>
     <p>
       Les commandes sont expédiées par La Poste Française en :
-      <ul>
+      <ul style="color: red">
         <li>Lettres suivies pour les produits dont la largeur est inférieure à 3 cm.</li>
         <li>Colissimo suivi pour les autres articles.</li>
       </ul>
       Les frais de livraison sont calculés automatiquement dès que vous finalisez votre panier. Les frais de livraisons varient selon la taille du colis et sa destination et le service choisi.<br>
-      La livraison est gratuite en France métropolitaine dans les départements en Outre Mer<br>
-      Lors de l'expédition de la commande, nous vous transmettons automatiquement le numéro de suivi du colis. Dès le départ et jusqu'à son arrivée, vous avez la possibilité de suivre votre colis en indiquant son numéro d'envoi sur le site de La Poste Française.<br>
+      <span style="color: red; text-decoration: underlined">La livraison est gratuite en France métropolitaine dans les départements en Outre Mer</span><br>
+      Lors de l'expédition de la commande, nous vous transmettons automatiquement le numéro de suivi du colis. Dès le départ et jusqu'à son arrivée, vous avez <span style="color: red; text-decoration: underline">la possibilité de suivre votre colis en indiquant son numéro d'envoi sur le site de La Poste Française.</span><br>
       Les frais de douanes et autres dans le pays d'arrivée sont à la charge du destinataire.<br>
       Vous devez vérifier la conformité de la marchandise au moment de la livraison et indiquer, si possible sur le bon de livraison, sous forme de réserves manuscrites accompagnées de votre signature les éventuelles anomalies constatées (paquet ouvert, produit endommagé,…) Vous devez ensuite contacter le Service Clients par téléphone ou par email.
     </p>
@@ -81,6 +81,7 @@
       </ul>      
     </p>
     <br>
+    <div style="color: red;">
     <h2>Clause n°7 : Retour / Échange</h2>
     <p>
       Hochea Creation s'engage à échanger ou à rembourser les produits dont vous n'êtes pas satisfait.<br>
@@ -91,6 +92,7 @@
       Les articles endommagés ou incomplets ne seront pas repris et vous seront retournés en l'état, à votre charge.<br>
       Vous serez remboursé par le moyen de paiement utilisé lors de l'achat.
     </p>
+    </div>
     <br>
     <h2>Clause n°8 : Propriété intellectuelle</h2>
     <p>
