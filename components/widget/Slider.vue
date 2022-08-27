@@ -10,7 +10,7 @@
     img-height="480"
   >
     <b-carousel-slide
-      caption="First slide"
+      caption="Des produits de qualité"
       img-src="https://picsum.photos/1024/480/?image=10"
     ></b-carousel-slide>
     <b-carousel-slide
