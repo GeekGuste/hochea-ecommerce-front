@@ -22,7 +22,7 @@
       img-src="https://picsum.photos/1024/480/?image=22"
     ></b-carousel-slide>
     <b-carousel-slide
-      caption="Fourth Slide"
+      caption="Bienvenue chez hochea"
       img-src="https://picsum.photos/1024/480/?image=23"
     ></b-carousel-slide>
   </b-carousel>
