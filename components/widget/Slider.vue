@@ -11,7 +11,7 @@
   >
     <b-carousel-slide
       caption="Des produits de qualité"
-      img-src="~/assets/images/IMG_8018.JPG"
+      img-src="~/assets/images/pq.jpg"
     ></b-carousel-slide>
     <b-carousel-slide
       caption="Second Slide"
