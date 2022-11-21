@@ -35,28 +35,30 @@
             <b-col sm="6">Ville: {{ order.town }}</b-col>
             <b-col sm="6">Code postal: {{ order.postal_code }}</b-col>
         </b-row>
-        <b-row>
-            <b-col sm="6"></b-col>
-            <b-col sm="6"></b-col>
+        <b-row v-if="order.is_delivered" class="bg-secondary">
+            <b-col sm="6">Livraison</b-col>
+            <b-col sm="6">{{ order.delivery_details }}</b-col>
         </b-row>
-        <center><u>Produits</u></center>
-        <b-row v-for="orderProduct in order.orderProducts" :key="orderProduct.id">
-            <b-col>
-                <b-img
-                    class="rounded fluid"
-                    style="max-height: 100px"
-                    :src="orderProduct.image_url"
-                    fluid
-                    :alt="orderProduct.label"
-                    ></b-img>
-            </b-col>
-            <b-col>
-                {{ orderProduct.label }}
-            </b-col>
-            <b-col>
-                {{ orderProduct.price }} € x {{ orderProduct.quantity }}
-            </b-col>
-        </b-row>
+        <div class="mt-5">
+            <center><u>Produits</u></center>
+            <b-row v-for="orderProduct in order.orderProducts" :key="orderProduct.id">
+                <b-col>
+                    <b-img
+                        class="rounded fluid"
+                        style="max-height: 100px"
+                        :src="orderProduct.image_url"
+                        fluid
+                        :alt="orderProduct.label"
+                        ></b-img>
+                </b-col>
+                <b-col>
+                    {{ orderProduct.label }}
+                </b-col>
+                <b-col>
+                    {{ orderProduct.price }} € x {{ orderProduct.quantity }}
+                </b-col>
+            </b-row>
+        </div>
     </div>
     <div v-else class="alert alert-danger">
         Cette commande n'existe pas/plus

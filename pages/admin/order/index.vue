@@ -39,7 +39,7 @@
               >
               <button
                 v-if="!order.is_delivered"
-                @click="confirmDelivery(order.id)"
+                @click="showModal(order.id)"
                 class="btn btn-success"
               >
                 Confirmer la livraison
@@ -48,6 +48,24 @@
           </tr>
         </tbody>
       </table>
+      <b-modal id="order-modal" hide-footer title="Confirmation de livraison">
+        <div class="d-block text-center">
+          <b-form-textarea
+            id="textarea"
+            v-model="confirmationText"
+            placeholder="Informations de livraison"
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+        </div>
+        <b-button
+          class="mt-3"
+          variant="btn btn-success"
+          block
+          @click="confirmDelivery(confirmationOrderId)"
+          >Confirmer</b-button
+        >
+      </b-modal>
       <b-row
         class="d-flex justify-content-center"
         v-if="!!orderList.next || !!orderList.previous"
@@ -78,6 +96,8 @@ export default Vue.extend({
       orderList: null,
       id: null,
       currentPage: 1,
+      confirmationOrderId: 0,
+      confirmationText: "",
     };
   },
   mounted: function () {
@@ -96,6 +116,10 @@ export default Vue.extend({
     },
   },
   methods: {
+    showModal(confirmId: string) {
+      this.confirmationOrderId = confirmId;
+      this.$bvModal.show("order-modal");
+    },
     formatDate(dateString: string) {
       return new Date(dateString).toLocaleString("fr-FR");
     },
@@ -118,14 +142,19 @@ export default Vue.extend({
         this.$axios
           .$patch(`/api/order/${id}/`, {
             is_delivered: true,
+            delivery_details: this.confirmationText,
           })
           .then((order) => {
+            this.confirmationText = "";
             //@ts-ignore
             this.$bvToast.toast("Commande enregistrée comme livrée", {
               title: "Succès",
               variant: "success",
             });
             this.loadOrders();
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
           });
       }
     },

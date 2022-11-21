@@ -65,5 +65,6 @@ export interface Order{
     user: User;
     is_paid: boolean;
     is_delivered: boolean;
+    delivery_details: string;
     orderProducts: OrderProduct[];
 }

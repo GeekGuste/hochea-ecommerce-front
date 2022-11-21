@@ -10,6 +10,12 @@
   </div>
 </template>
 
+<style>
+a{
+  color: #000;
+}
+</style>
+
 <script lang="ts">
 import Vue from "vue";
 import { CategoryTree } from "../../models/category";
