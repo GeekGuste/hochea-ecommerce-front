@@ -1,6 +1,5 @@
 <template>
   <div class="filtre-container">
-      <h2><center>Boutique</center></h2>
     <b-row>
       <b-col md="3">
         <SideBar v-for="category in categoryTree"
