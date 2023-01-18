@@ -86,15 +86,17 @@ export default Vue.extend({
       this.$axios
       .$post("/auth/users/", {...this.form, username: this.form.email})
       .then((result) => {
-            console.log(result);
             if(!!result){
               //login with user account information
               this.$auth.loginWith('local', { data: {email: this.form.email, password: this.form.password}})
                 .then(() => {
-                  alert("inscription réussie \n Vous allez être redirigé vers votre espace client"); 
+                  //@ts-ignore
+                  this.$bvToast.toast("inscription réussie \n Vous allez être redirigé vers votre espace client", {
+                      title: "Succès",
+                      variant: "success",
+                  });
                   //redirect to profile page
-                  this.$router.push('/profile/')
-                  window.location.reload();
+                  window.location.replace('/profile/');
                 });
             }
       });

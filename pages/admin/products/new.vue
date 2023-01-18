@@ -156,7 +156,11 @@ export default Vue.extend({
         this.$router.push('/admin/products/'+res.id+'/editVariant');
       })
       .catch(function(error) {
-          alert("Erreur d'ajout du produit.")
+          //@ts-ignore
+          this.$bvToast.toast("Erreur d'ajout du produit.", {
+              title: "Erreur !",
+              variant: "error",
+          });
           // handle error
           console.log(error);
        });
