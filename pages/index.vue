@@ -20,14 +20,21 @@
     </b-row>
     <b-row>
       <b-col sm="12">
-        <h2
-          v-if="
-            !!productsList && !!productsList.length && productsList.length > 0
-          "
-        >
+        <h2>
           <center>Nos derniers produits</center>
         </h2>
-        <ProductsList :productsList="productsList" />
+        <ProductsList :products-list="productsList" />
+        <!--template>
+          <v-sheet color="grey lighten-4" class="pa-3">
+            <b-col v-for="index in Array(12)" cols="12" md="4" :key="index">
+              <v-skeleton-loader
+                :key="index"
+                class="card mx-auto"
+                type="card"
+              ></v-skeleton-loader>
+            </b-col>
+          </v-sheet>
+        </--template-->
       </b-col>
     </b-row>
   </div>

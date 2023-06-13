@@ -8,11 +8,16 @@
           :key="product.id"
         >
           <div class="card-img">
-            <img
-              :src="product.principal_image"
-              class="card-img-top img-fluid product-image"
-              :alt="product.label"
-            />
+            <NuxtLink
+              :to="'/product/' + product.id"
+              class="text-decoration-none"
+            >
+              <img
+                :src="product.principal_image"
+                class="card-img-top img-fluid product-image"
+                :alt="product.label"
+              />
+            </NuxtLink>
           </div>
           <div class="card-body d-flex flex-column justify-content-between">
             <div>
