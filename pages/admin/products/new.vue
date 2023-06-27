@@ -172,6 +172,7 @@ export default Vue.extend({
       formData.append('description', this.form.description)
       formData.append('qte_stock', this.form.qte_stock)
       formData.append('with_size', this.form.with_size ? 'True' : 'False')
+      formData.append('size', '')
       formData.append('principal_image', this.form.principal_image)
       formData.append('price', this.form.price)
       formData.append('promo_price', this.form.promo_price)
