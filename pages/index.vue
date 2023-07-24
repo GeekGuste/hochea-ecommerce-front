@@ -43,7 +43,7 @@ export default Vue.extend({
     return {
       categoryTree: [],
       productsList: [],
-      loading: false
+      loading: true
     }
   },
   async mounted() {
@@ -53,7 +53,6 @@ export default Vue.extend({
         this.categoryTree = categoryTree
       })
     // On prend les derniers produits enregistrés pour la page d'accueil
-    this.loading = true
     this.$axios
       .$get('/api/product/last/')
       .then((productsList: PaginatedList<Product>) => {
