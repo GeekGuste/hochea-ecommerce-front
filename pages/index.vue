@@ -23,18 +23,7 @@
         <h2>
           <center>Nos derniers produits</center>
         </h2>
-        <ProductsList :products-list="productsList" />
-        <!--template>
-          <v-sheet color="grey lighten-4" class="pa-3">
-            <b-col v-for="index in Array(12)" cols="12" md="4" :key="index">
-              <v-skeleton-loader
-                :key="index"
-                class="card mx-auto"
-                type="card"
-              ></v-skeleton-loader>
-            </b-col>
-          </v-sheet>
-        </--template-->
+        <ProductsList :loading="loading" :products-list="productsList" />
       </b-col>
     </b-row>
   </div>
@@ -53,7 +42,8 @@ export default Vue.extend({
   data() {
     return {
       categoryTree: [],
-      productsList: []
+      productsList: [],
+      loading: false
     }
   },
   async mounted() {
@@ -63,10 +53,12 @@ export default Vue.extend({
         this.categoryTree = categoryTree
       })
     // On prend les derniers produits enregistrés pour la page d'accueil
+    this.loading = true
     this.$axios
       .$get('/api/product/last/')
       .then((productsList: PaginatedList<Product>) => {
         this.productsList = productsList
+        this.loading = false
       })
   },
   methods: {

@@ -1,7 +1,20 @@
 <template>
   <div>
     <b-row class="d-flex justify-content-center">
-      <template v-if="!!products && products.length > 0">
+      <template v-if="!!loading">
+        <div class="card m-2 mb-4 shadow-sm" v-for="i in 6" :key="i">
+          <div>
+            <b-skeleton-img
+              class="card-img-top img-fluid product-image"
+            ></b-skeleton-img>
+          </div>
+          <div class="card-body">
+            <b-skeleton></b-skeleton>
+            <b-skeleton></b-skeleton>
+          </div>
+        </div>
+      </template>
+      <template v-else-if="!!products && products.length > 0">
         <div
           class="card m-2 mb-4 shadow-sm"
           v-for="product in products"
@@ -95,7 +108,8 @@ import { Product } from '../models/product'
 export default Vue.extend({
   name: 'ProductsList',
   props: {
-    productsList: null
+    productsList: null,
+    loading: null
   },
   data() {
     return {
