@@ -1,16 +1,14 @@
 <template>
   <div>
-  <div>
-    <NuxtLink class="btn btn-warning text-white" to="/admin/variants/">Liste</NuxtLink>
-    <hr>
-  </div>
+    <div>
+      <NuxtLink class="btn btn-warning text-white" to="/admin/variants/"
+        >Liste</NuxtLink
+      >
+      <hr />
+    </div>
     <b-card header="Ajouter un type de variant">
       <b-form @submit="onSubmit" @reset="onReset">
-        <b-form-group
-          id="input-group-1"
-          label="Libellé:"
-          label-for="input-1"
-        >
+        <b-form-group id="input-group-1" label="Libellé:" label-for="input-1">
           <b-form-input
             id="input-1"
             v-model="form.label"
@@ -25,42 +23,37 @@
     </b-card>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-
-export default Vue.extend({
-  name: "AdminAddVariantType",
-  layout: "admin",
-  middleware: ["auth"],
-  data() {
-    return {
-      form: {
-        label: "",
-      },
-    };
+<script setup lang="ts">
+definePageMeta({
+  layout: 'admin',
+  transition: {
+    name: 'AdminAddVariantType'
   },
-  methods: {
-    onSubmit(event: any) {
-      event.preventDefault();
-      this.$axios
-        .$post("/api/varianttype/", { ...this.form })
-        .then((res: any) => {
-          //@ts-ignore
-         this.$bvToast.toast("Type de variant enregistré avec succès", {
-            title: "Succès",
-            variant: "success",
-          });
-          this.clearForm();
-        });
-    },
-    onReset(event: any) {
-      event.preventDefault();
-      this.clearForm();
-    },
-    clearForm() {
-      // Reset our form values
-      this.form.label = "";
-    },
-  },
-});
+  middleware: ['auth']
+})
+const form = ref({
+  label: ''
+})
+const onSubmit = (event: any) => {
+  event.preventDefault()
+  $fetch('/api/varianttype/', {
+    method: 'POST',
+    body: { ...form.value }
+  }).then((res: any) => {
+    //@ts-ignore
+    this.$bvToast.toast('Type de variant enregistré avec succès', {
+      title: 'Succès',
+      variant: 'success'
+    })
+    clearForm()
+  })
+}
+const onReset = (event: any) => {
+  event.preventDefault()
+  clearForm()
+}
+const clearForm = () => {
+  // Reset our form values
+  form.value.label = ''
+}
 </script>

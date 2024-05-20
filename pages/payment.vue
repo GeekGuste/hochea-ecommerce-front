@@ -261,194 +261,197 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+<script setup lang="ts">
 import { StripeElementCard } from '@vue-stripe/vue-stripe'
 import { DeliveryZoneInfo } from '../models/delivery'
 import { PaginatedList } from '../models/pagination'
+import { useCartStore } from '@/stores/cart'
 
-export default Vue.extend({
-  name: 'PaymentPage',
-  components: {
-    StripeElementCard
+definePageMeta({
+  transition: {
+    name: "PaymentPage",
   },
   middleware: ['auth'],
-  data() {
-    return {
-      form: {
-        email: '',
-        last_name: '',
-        first_name: '',
-        phone_number: '',
-        address: '',
-        postal_code: '',
-        country: '',
-        town: '',
-        deliveryZoneInfo: '',
-        zone: '',
-        delivery_charges: null,
-        paymentMode: 'card'
-      },
-      deliveryZoneOptions: [],
-      publishableKey:
-        'pk_test_51Kpr85DP9ndu4EFOVJwmW613vPQLBznGcMK3uCTRb9P3BukYWtvjPLPRE6Ro1UiQUj4iyS48PZKjgGfmP14BBZpA00zasiO8k7',
-      elementsOptions: {
-        appearance: {} // appearance options
-      },
-      paymentIntent: null,
-      renderPaymentComponent: true,
-      paypal: {
-        sandbox:
-          'AZV0n5-qou-sbYQo1mRQHvMd8UW6_BoY3g9OKj_ltgDV7iMIPRxwWdDu_W7aKJ_8wkXeYSZPQKlT-GRO',
-        production:
-          'AUGuYYnINwWo5dsE4BjvvDBZpQAGG0CVt3lUDMYG1JcoNP0QWrFQMWrPaWBeOdgUbyFQO9E3U5friPj-'
-      },
-      paypalStyle: {
-        label: 'checkout',
-        size: 'medium',
-        shape: 'pill',
-        color: 'gold'
-      }
-    }
-  },
-  created() {
-    this.$axios
-      .$get('/api/deliveryZoneInfo/')
-      .then((deliveryZoneList: PaginatedList<DeliveryZoneInfo>) => {
-        this.deliveryZoneOptions = deliveryZoneList.results.map(
-          (deliveryZoneInfo: DeliveryZoneInfo) => {
-            return {
-              value: deliveryZoneInfo.id,
-              text: deliveryZoneInfo.zone,
-              delivery_charges: deliveryZoneInfo.delivery_charges
-            }
-          }
-        )
-      })
-  },
-  mounted() {
-    // console.log(this.items)
-  },
-  computed: {
-    ...mapGetters({
-      items: 'cart/items',
-      cartTotalPrice: 'cart/cartTotalPrice',
-      cartTotalWeight: 'cart/cartTotalWeight'
-    }),
-    realDeliveryCharges() {
-      if (parseFloat(this.cartTotalPrice) > 49) {
-        return 0
-      } else {
-        const kgDeliveryCharge = this.form.delivery_charges
-          ? parseFloat(this.form.delivery_charges)
-          : 0
-        if (this.cartTotalWeight <= 1000) {
-          // frais par défaut si inférieur à 1kg
-          return kgDeliveryCharge
-        } else {
-          const nbKg = Math.floor(this.cartTotalWeight / 1000)
-          return kgDeliveryCharge + 1 * (nbKg - 1)
-        }
-      }
-    },
-    totalCommande() {
-      return parseFloat(this.cartTotalPrice) + this.realDeliveryCharges
-    },
-    isInvalid() {
-      return (
-        this.form.email == '' ||
-        this.form.last_name == '' ||
-        this.form.first_name == '' ||
-        this.form.phone_number == '' ||
-        this.form.address == '' ||
-        this.form.country == '' ||
-        this.form.town == '' ||
-        this.form.deliveryZoneInfo == null
-      )
-    }
-  },
-  methods: {
-    ...mapMutations({
-      incrementProductQuantity: 'cart/incrementProductQuantity',
-      reduceProductQuantity: 'cart/reduceProductQuantity',
-      removeProduct: 'cart/removeProduct',
-      clearCart: 'cart/clearCart'
-    }),
-    zoneSelection(e: any) {
-      const zone = this.deliveryZoneOptions.find((z: any) => z.value == e)
-      this.form.zone = zone.text
-      this.form.delivery_charges = zone.delivery_charges
-      this.generatePaymentIntent()
-    },
-    async generatePaymentIntent() {
-      const paymentIntent = await this.$axios.$post('/sales/create-payment/', {
-        items: this.items,
-        ...this.form
-      }) // this is just a dummy, create your own API call
-      this.elementsOptions.clientSecret =
-        paymentIntent.payment_intent.client_secret
-      this.forcePaymentRerender()
-      this.paymentIntent = paymentIntent.payment_intent
-    },
-    forcePaymentRerender() {
-      // Remove my-component from the DOM
-      this.renderPaymentComponent = false
+});
 
-      // If you like promises better you can
-      // also use nextTick this way
-      this.$nextTick().then(() => {
-        // Add the component back in
-        this.renderPaymentComponent = true
-      })
-    },
-    async tokenCreated(token) {
-      this.$axios
-        .$post('/sales/confirm-payment/', {
-          intent_id: this.paymentIntent?.id,
-          items: this.items,
-          ...this.form
-        })
-        .then((paymentResult) => {
-          this.handleSuccessfulPayment(paymentResult)
-        })
-    },
-    handleSuccessfulPayment(result: any) {
-      // @ts-ignore
-      this.$bvToast.toast('Commande enregistrée avec succès', {
-        title: 'Succès',
-        variant: 'success'
-      })
-      const orderId = result.order_id
-      // On vide le panier
-      this.clearCart()
-      setTimeout(
-        () => this.$router.push(`/profile/order/${orderId}/details`),
-        3000
+const cart = useCartStore()
+const form = ref({
+  email: '',
+  last_name: '',
+  first_name: '',
+  phone_number: '',
+  address: '',
+  postal_code: '',
+  country: '',
+  town: '',
+  deliveryZoneInfo: '',
+  zone: '',
+  delivery_charges: null,
+  paymentMode: 'card'
+})
+
+const deliveryZoneOptions = ref([])
+
+const publishableKey = ref('pk_test_51Kpr85DP9ndu4EFOVJwmW613vPQLBznGcMK3uCTRb9P3BukYWtvjPLPRE6Ro1UiQUj4iyS48PZKjgGfmP14BBZpA00zasiO8k7')
+const elementsOptions = ref({
+  appearance: {} // appearance options
+})
+const paymentIntent = ref(null)
+
+const renderPaymentComponent = ref(true)
+
+const paypal = ref({
+  sandbox:
+    'AZV0n5-qou-sbYQo1mRQHvMd8UW6_BoY3g9OKj_ltgDV7iMIPRxwWdDu_W7aKJ_8wkXeYSZPQKlT-GRO',
+  production:
+    'AUGuYYnINwWo5dsE4BjvvDBZpQAGG0CVt3lUDMYG1JcoNP0QWrFQMWrPaWBeOdgUbyFQO9E3U5friPj-'
+})
+
+const paypalStyle = ref({
+  label: 'checkout',
+  size: 'medium',
+  shape: 'pill',
+  color: 'gold'
+})
+
+onMounted(() => {
+  useFetch('/api/deliveryZoneInfo/')
+    .then((deliveryZoneList: PaginatedList<DeliveryZoneInfo>) => {
+      deliveryZoneOptions.value = deliveryZoneList.results.map(
+        (deliveryZoneInfo: DeliveryZoneInfo) => {
+          return {
+            value: deliveryZoneInfo.id,
+            text: deliveryZoneInfo.zone,
+            delivery_charges: deliveryZoneInfo.delivery_charges
+          }
+        }
       )
-    },
-    paymentError(event) {
-      // @ts-ignore
-      this.$bvToast.toast(event.message, {
-        title: 'Erreur',
-        variant: 'danger'
-      })
-    },
-    pay() {
-      // console.log(this.$refs.paymentRef);
-      this.$refs.paymentRef.submit()
-    },
-    paypalPaymentCompleted(event) {
-      console.log(event)
-      this.$axios
-        .$post('/sales/save-paypal-order/', {
-          items: this.items,
-          ...this.form
-        })
-        .then((result) => {
-          this.handleSuccessfulPayment(result)
-        })
+    })
+})
+
+const items = computed(() => cart.items);
+const cartTotalPrice = computed(() => cart.cartTotalPrice);
+const cartTotalWeight = computed(() => cart.cartTotalWeight);
+
+const realDeliveryCharges = computed(() => {
+  if (parseFloat(cartTotalPrice.value) > 49) {
+    return 0
+  } else {
+    const kgDeliveryCharge = form.value.delivery_charges
+      ? parseFloat(form.value.delivery_charges)
+      : 0
+    if (cartTotalWeight.value <= 1000) {
+      // frais par défaut si inférieur à 1kg
+      return kgDeliveryCharge
+    } else {
+      const nbKg = Math.floor(cartTotalWeight.value / 1000)
+      return kgDeliveryCharge + 1 * (nbKg - 1)
     }
   }
 })
+
+const totalCommande = computed(() => {
+  return parseFloat(cartTotalPrice.value) + realDeliveryCharges.value
+})
+
+const isInvalid = computed(() => {
+  return (
+    form.value.email == '' ||
+    form.value.last_name == '' ||
+    form.value.first_name == '' ||
+    form.value.phone_number == '' ||
+    form.value.address == '' ||
+    form.value.country == '' ||
+    form.value.town == '' ||
+    form.value.deliveryZoneInfo == null
+  )
+})
+
+const clearCart = cart.clearCart()
+
+const zoneSelection(e: any) {
+  const zone = deliveryZoneOptions.value.find((z: any) => z.value == e)
+  const form.value.zone = zone.text
+  const form.value.delivery_charges = zone.delivery_charges
+  generatePaymentIntent()
+}
+
+const forcePaymentRerender = () => {
+  // Remove my-component from the DOM
+  renderPaymentComponent = false
+
+  // If you like promises better you can
+  // also use nextTick this way
+  nextTick().then(() => {
+    // Add the component back in
+    renderPaymentComponent = true
+  })
+}
+
+const generatePaymentIntent = () => {
+  const paymentIntent = await $fetch('/sales/create-payment/', {
+    method: 'POST',
+    body: {
+      items: items.value,
+      ...form.value
+    }
+  }).then((res: any) => {
+    elementsOptions.value.clientSecret =
+    paymentIntent.value.payment_intent.client_secret
+    forcePaymentRerender()
+    paymentIntent = paymentIntent.value.payment_intent
+  })
+}
+
+const handleSuccessfulPayment = (result: any) => {
+  // @ts-ignore
+  this.$bvToast.toast('Commande enregistrée avec succès', {
+    title: 'Succès',
+    variant: 'success'
+  })
+  const orderId = result.order_id
+  // On vide le panier
+  clearCart()
+  setTimeout(
+    () => navigateTo({ path: `/profile/order/${orderId}/details` }),
+    3000
+  )
+}
+
+const tokenCreated = (token) => {
+  $fetch('/api/category/', {
+    method: 'POST',
+    body: {
+      intent_id: paymentIntent.value?.id,
+      items: items.value,
+      ...form.value
+    },
+  }).then((paymentResult: any) => {
+    handleSuccessfulPayment(paymentResult)
+  })
+}
+
+const paymentError = (event) => {
+  // @ts-ignore
+  this.$bvToast.toast(event.message, {
+    title: 'Erreur',
+    variant: 'danger'
+  })
+}
+const paymentRef = ref()
+const pay = () => {
+  // console.log(this.$refs.paymentRef);
+  paymentRef.submit()
+}
+const paypalPaymentCompleted = (event) => {
+  $fetch('/sales/save-paypal-order/', {
+    method: 'POST',
+    body: {
+      items: items.value,
+      ...form.value
+    },
+  }).then((result: any) => {
+    handleSuccessfulPayment(result)
+  })
+}
 </script>

@@ -31,6 +31,7 @@
       "@types/node"
     ]
   },
+  "extends": "./.nuxt/tsconfig.json",
   "exclude": [
     "node_modules",
     ".nuxt",

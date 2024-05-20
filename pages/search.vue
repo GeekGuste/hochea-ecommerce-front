@@ -44,71 +44,65 @@
   </div>
 </template>
 
-<style>
-.filtre-container {
-  margin-top: 20px;
-}
-</style>
-
-<script lang="ts">
-import Vue from 'vue'
+<script setup lang="ts">
 import SideBar from '../components/widget/SideBar.vue'
 import Slider from '../components/widget/Slider.vue'
 import { Category, CategoryTree } from '../models/category'
 import { PaginatedList } from '../models/pagination'
 import { Product } from '../models/product'
-export default Vue.extend({
-  components: { SideBar, Slider },
-  name: 'IndexPage',
-  data() {
-    return {
-      productsList: [],
-      categoryTree: [],
-      category: null,
-      loading: false
-    }
-  },
-  async mounted() {
-    this.$axios
-      .$get('/api/category/tree/')
-      .then((categoryTree: CategoryTree[]) => {
-        this.categoryTree = categoryTree
-      })
-    this.loadProducts()
-    this.getCategory()
-  },
-  watch: {
-    '$route.query'() {
-      this.loadProducts()
-      this.getCategory()
-    }
-  },
-  methods: {
-    loadProducts() {
-      this.loading = true
-      this.$axios
-        .$get('/api/product/', {
-          params: { is_variant: 'False', ...this.$route.query }
-        })
-        .then((productsList: PaginatedList<Product>) => {
-          this.productsList = productsList
-          this.loading = false
-        })
-    },
-    getCategory() {
-      if (!!this.$route.query?.category) {
-        this.$axios
-          .$get(`/api/category/${this.$route.query.category}/`)
-          .then((category: Category) => {
-            this.category = category
-          })
-      } else {
-        this.category = null
-      }
-    },
-    goToCategoryPage(id: number) {
-      this.$router.push({ path: '/search/', query: { category: id } })
-    }
-  }
+
+const productsList = ref([])
+const categoryTree = ref([])
+const category = ref(null)
+const loading = ref(true)
+const route = useRoute()
+
+onMounted(() => {
+  this.$axios
+    .$get('/api/category/tree/')
+    .then((categoryTree: CategoryTree[]) => {
+      this.categoryTree = categoryTree
+    })
+  categoryTree.value = await useFetch()
+  loadProducts()
+  getCategory()
 })
+watch(
+  () => route.query,
+  () => {
+    loadProducts()
+    getCategory()
+  }
+)
+const loadProducts = () => {
+  loading.value = true
+  this.$axios
+    .$get('/api/product/', {
+      params: { is_variant: 'False', ...this.$route.query }
+    })
+    .then((productsList: PaginatedList<Product>) => {
+      productsList.value = productsList
+      loading.value = false
+    })
+}
+const getCategory = () => {
+  if (!!this.$route.query?.category) {
+    this.$axios
+      .$get(`/api/category/${this.$route.query.category}/`)
+      .then((category: Category) => {
+        category.value = category
+      })
+  } else {
+    category.value = null
+  }
+}
+const goToCategoryPage = (id: number) => {
+  navigateTo({ path: '/search/', query: { category: id } })
+}
 </script>
+
+<style>
+.filtre-container {
+  margin-top: 20px;
+}
+</style>

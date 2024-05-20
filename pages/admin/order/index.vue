@@ -82,91 +82,87 @@
     <div v-else class="alert alert-danger">Aucune commande enregistrée</div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { PaginatedList } from "../../../models/pagination";
-import { Order } from "../../../models/product";
+<script setup lang="ts">
+import { PaginatedList } from '../../../models/pagination'
+import { Order } from '../../../models/product'
 
-export default Vue.extend({
-  name: "UserOrderPage",
-  layout: "admin",
-  middleware: ["auth"],
-  data() {
-    return {
-      orderList: null,
-      id: null,
-      currentPage: 1,
-      confirmationOrderId: 0,
-      confirmationText: "",
-    };
-  },
-  mounted: function () {
-    this.currentPage = this.$route.query.page || 1;
-    this.loadOrders();
-  },
-  watch: {
-    "$route.query"() {
-      this.currentPage = this.$route.query.page || 1;
-      console.log(this.$route);
-    },
-  },
-  computed: {
-    orders() {
-      return this.orderList?.results;
-    },
-  },
-  methods: {
-    showModal(confirmId: string) {
-      this.confirmationOrderId = confirmId;
-      this.$bvModal.show("order-modal");
-    },
-    formatDate(dateString: string) {
-      return new Date(dateString).toLocaleString("fr-FR");
-    },
-    linkGen(pageNum: Number) {
-      let query = this.$route.query;
-      query.page = pageNum;
-      return (
-        this.$router.history.current.path + "?" + this.toQueryString(query)
-      );
-    },
-    loadOrders() {
-      this.$axios
-        .$get("/api/order/all/?page=" + this.currentPage)
-        .then((orderList: PaginatedList<Order>) => {
-          this.orderList = orderList;
-        });
-    },
-    confirmDelivery(id: number) {
-      if (confirm("Êtes vous sûr de déclarer la livraison?")) {
-        this.$axios
-          .$patch(`/api/order/${id}/`, {
-            is_delivered: true,
-            delivery_details: this.confirmationText,
-          })
-          .then((order) => {
-            this.confirmationText = "";
-            //@ts-ignore
-            this.$bvToast.toast("Commande enregistrée comme livrée", {
-              title: "Succès",
-              variant: "success",
-            });
-            this.loadOrders();
-            setTimeout(() => {
-              window.location.reload();
-            }, 500);
-          });
+definePageMeta({
+  layout: 'admin',
+  transition: {
+    name: 'UserOrderPage'
+  }
+})
+
+const router = useRouter()
+const route = useRoute()
+const orderList = ref(null)
+const id = ref(null)
+const currentPage = ref(1)
+const confirmationOrderId = ref(0)
+const confirmationText = ref('')
+const orders = computed(() => orderList.value?.results)
+
+onMounted(() => {
+  currentPage.value = route.query.page || 1
+  loadOrders()
+})
+
+watch(
+  () => route.query,
+  () => {
+    currentPage.value = route.query.page || 1
+  }
+)
+
+const showModal = (confirmId: string) => {
+  confirmationOrderId.value = confirmId
+  this.$bvModal.show('order-modal')
+}
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleString('fr-FR')
+}
+const linkGen = (pageNum: Number) => {
+  const query = route.query
+  query.page = pageNum
+  return router.history.current.path + '?' + toQueryString(query)
+}
+const loadOrders = () => {
+  useFetch('/api/order/all/?page=' + currentPage.value).then(
+    (orderListToLoad: PaginatedList<Order>) => {
+      orderList.value = orderListToLoad
+    }
+  )
+}
+const confirmDelivery = (id: number) => {
+  if (confirm('Êtes vous sûr de déclarer la livraison?')) {
+    $fetch(`/api/order/${id}/`, {
+      method: 'PATCH',
+      body: {
+        is_delivered: true,
+        delivery_details: this.confirmationText
       }
-    },
-    toQueryString(obj: Object) {
-      let str = [];
-      for (var p in obj) {
-        if (obj.hasOwnProperty(p)) {
-          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-        }
-      }
-      return str.join("&");
-    },
-  },
-});
+    }).then((order) => {
+      confirmationText.value = ''
+      //@ts-ignore
+      this.$bvToast.toast('Commande enregistrée comme livrée', {
+        title: 'Succès',
+        variant: 'success'
+      })
+      loadOrders()
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
+    })
+  }
+}
+
+const toQueryString = (obj: Object) => {
+  const str = []
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
+    }
+  }
+  return str.join('&')
+}
 </script>

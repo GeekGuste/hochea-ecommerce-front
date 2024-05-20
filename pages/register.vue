@@ -63,60 +63,54 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script setup lang="ts">
 
-export default Vue.extend({
-  name: "LoginPage",
-  data() {
-      return {
-          form: {
-            first_name: "",
-            last_name: "",
-            email: "",
-            password: "",
-            phone_number: ""
-          },
-      };
-  },
-  methods: {
-    onSubmit(event: any) {
-      event.preventDefault();
-      //user registration
-      this.$axios
-      .$post("/auth/users/", {...this.form, username: this.form.email})
-      .then((result) => {
-            if(!!result){
-              //login with user account information
-              this.$auth.loginWith('local', { data: {email: this.form.email, password: this.form.password}})
-                .then(() => {
-                  //@ts-ignore
-                  this.$bvToast.toast("inscription réussie \n Vous allez être redirigé vers votre espace client", {
-                      title: "Succès",
-                      variant: "success",
-                  });
-                  //redirect to profile page
-                  window.location.replace('/profile/');
-                });
-            }
-      });
-    },
-    onReset(event: any) {
-      event.preventDefault();
-      // Reset our form values
-      this.form.email = "";
-      this.form.password = "";
-    },
-    async logInUser(form: {email: string, password: string}) {
-      try {
-        let response = await this.$auth.loginWith("local", {
-          data: form,
+
+const form = ref({
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+  phone_number: ""
+})
+
+const onSubmit = (event: any) => {
+  event.preventDefault();
+  //user registration
+  $fetch("/auth/users/", {
+    method: 'POST',
+    body: {...form.value, username: form.value.email}
+  }).then((result: any) => {
+    if(!!result){
+      //login with user account information
+      this.$auth.loginWith('local', { data: {email: this.form.email, password: this.form.password}})
+        .then(() => {
+          //@ts-ignore
+          this.$bvToast.toast("inscription réussie \n Vous allez être redirigé vers votre espace client", {
+              title: "Succès",
+              variant: "success",
+          });
+          //redirect to profile page
+          window.location.replace('/profile/');
         });
-        console.log("success: " + JSON.stringify(response));
-      } catch (error) {
-        console.log("notification unsuccessful because " + JSON.stringify(error));
-      }
-    },
-  },
-});
+    }    
+  })
+}
+
+const onReset = (event: any) => {
+  event.preventDefault();
+  // Reset our form values
+  form.value.email = "";
+  form.value.password = "";
+}
+
+const logInUser = (form: {email: string, password: string}) => {
+  try {
+    let response = await $auth.loginWith("local", {
+      data: form,
+    });
+  } catch (error) {
+    console.log("notification unsuccessful because " + JSON.stringify(error));
+  }
+}
 </script>

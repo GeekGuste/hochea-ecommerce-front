@@ -109,108 +109,100 @@
     </b-card>
   </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
+<script setup lang="ts">
 import ImageUpload from '../../../components/widget/ImageUpload.vue'
 import { Category } from '../../../models/category'
 import { PaginatedList } from '../../../models/pagination'
 
-export default Vue.extend({
-  components: { ImageUpload },
-  name: 'AdminAddCategoriePage',
+definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
-  data() {
-    return {
-      form: {
-        label: '',
-        categories: [],
-        description: '',
-        qte_stock: '100',
-        weight: 500,
-        principal_image: '',
-        price: '',
-        promo_price: '',
-        with_size: false,
-        is_active: true
-      },
-      in_promotion: false,
-      categories: [],
-      show: true
-    }
-  },
-  mounted: function () {
-    this.$axios
-      .$get('/api/category/')
-      .then((categoryList: PaginatedList<Category>) => {
-        this.categories = categoryList.results.map((category) => {
-          return {
-            value: category.id,
-            text:
-              category.label +
-              (category.parent ? '(' + category.parent.label + ')' : '')
-          } as never
-        })
-      })
-  },
-  methods: {
-    onImageSelect(payload: any) {
-      this.form.principal_image = payload.image
-    },
-    onSubmit(event: any) {
-      event.preventDefault()
-      let formData = new FormData()
-      let config = {
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
-      }
-      formData.append('is_active', 'True')
-      formData.append('label', this.form.label)
-      formData.append('weight', this.form.weight)
-      formData.append('categories', this.form.categories)
-      formData.append('description', this.form.description)
-      formData.append('qte_stock', this.form.qte_stock)
-      formData.append('with_size', this.form.with_size ? 'True' : 'False')
-      formData.append('size', '')
-      formData.append('principal_image', this.form.principal_image)
-      formData.append('price', this.form.price)
-      formData.append('promo_price', this.form.promo_price)
-      this.$axios
-        .$post('/api/product/', formData, config)
-        .then((res: any) => {
-          //@ts-ignore
-          this.$bvToast.toast('Produit ajouté avec succès', {
-            title: 'Succès',
-            variant: 'success'
-          })
-          this.clearForm()
-          this.$router.push('/admin/products/' + res.id + '/editVariant')
-        })
-        .catch(function (error) {
-          //@ts-ignore
-          this.$bvToast.toast("Erreur d'ajout du produit.", {
-            title: 'Erreur !',
-            variant: 'error'
-          })
-          // handle error
-          console.log(error)
-        })
-    },
-    onReset(event: any) {
-      event.preventDefault()
-      this.clearForm()
-    },
-    clearForm() {
-      // Reset our form values
-      this.form.label = ''
-      this.form.category = ''
-      this.form.description = ''
-      this.form.qte_stock = ''
-      this.form.price = ''
-      this.form.promo_price = ''
-      this.$refs.uploadComponent.clear()
+})
+const form = ref({
+  label: '',
+  categories: [],
+  description: '',
+  qte_stock: '100',
+  weight: 500,
+  principal_image: '',
+  price: '',
+  promo_price: '',
+  with_size: false,
+  is_active: true
+})
+const in_promotion = ref(false)
+const categories = ref([])
+const show = ref(true)
+const uploadComponent = ref()
+onMounted(() => {
+  useFetch('/api/category/').then((categoryList: PaginatedList<Category>) => {
+    categories.value = categoryList.results.map((category) => {
+      return {
+        value: category.id,
+        text:
+          category.label +
+          (category.parent ? '(' + category.parent.label + ')' : '')
+      } as never
+    })
+  })
+})
+const onImageSelect = (payload: any) => {
+  form.value.principal_image = payload.image
+}
+const onSubmit = (event: any) => {
+  event.preventDefault()
+  let formData = new FormData()
+  let config = {
+    headers: {
+      'content-type': 'multipart/form-data'
     }
   }
-})
+  formData.append('is_active', 'True')
+  formData.append('label', form.value.label)
+  formData.append('weight', form.value.weight)
+  formData.append('categories', form.value.categories)
+  formData.append('description', form.value.description)
+  formData.append('qte_stock', form.value.qte_stock)
+  formData.append('with_size', form.value.with_size ? 'True' : 'False')
+  formData.append('size', '')
+  formData.append('principal_image', form.value.principal_image)
+  formData.append('price', form.value.price)
+  formData.append('promo_price', form.value.promo_price)
+  $fetch('/api/product/', {
+    method: 'POST',
+    body: formData,
+    ...config
+  }).then((res: any) => {
+      //@ts-ignore
+      this.$bvToast.toast('Produit ajouté avec succès', {
+        title: 'Succès',
+        variant: 'success'
+      })
+      clearForm()
+      navigateTo('/admin/products/' + res.id + '/editVariant')
+    })
+    .catch(function (error) {
+      //@ts-ignore
+      this.$bvToast.toast("Erreur d'ajout du produit.", {
+        title: 'Erreur !',
+        variant: 'error'
+      })
+      // handle error
+      console.log(error)
+    })
+}
+const onReset = (event: any) => {
+  event.preventDefault()
+  clearForm()
+}
+clearForm() {
+  // Reset our form values
+  form.value.label = ''
+  form.value.category = ''
+  form.value.description = ''
+  form.value.qte_stock = ''
+  form.value.price = ''
+  form.value.promo_price = ''
+  uploadComponent.clear()
+}
 </script>

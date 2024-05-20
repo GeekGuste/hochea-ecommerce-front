@@ -1,9 +1,19 @@
-require('dotenv').config()
+import { defineNuxtConfig } from 'nuxt/config'
 
-export default {
+export default defineNuxtConfig({
+  runtimeConfig: {
+    // Private config that is only available on the server
+    stripePk: 'pk_test_51Kpr85DP9ndu4EFOVJwmW613vPQLBznGcMK3uCTRb9P3BukYWtvjPLPRE6Ro1UiQUj4iyS48PZKjgGfmP14BBZpA00zasiO8k7',
+    locale: 'fr',
+    // Config within public will be also exposed to the client
+    public: {
+      apiVersion: '1.0',
+      baseUrl: 'http://127.0.0.1:8000',
+    }
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'hochea-ecommerce-front',
+  meta: {
+    title: 'hochea creation',
     htmlAttrs: {
       lang: 'fr'
     },
@@ -28,34 +38,12 @@ export default {
   styleResources: {
     scss: '@/assets/scss/_variables.scss'
   },
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    {
-      src: '~/plugins/vue-stripe.js',
-      src: '~/plugins/paypal.client.js',
-      /*ssr: false*/
-      mode: 'client'
-    }
-  ],
-
-  // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
-
-  env: {
-    STRIPE_PK: process.env.STRIPE_PK
-  },
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
-    '@nuxtjs/dotenv'
-  ],
-
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@pinia/nuxt',
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
+    '@nuxtjs/eslint-module',
     //'@nuxtjs/style-resources',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
@@ -101,7 +89,7 @@ export default {
       }
     }
   },
-  //Disable Nuxt from importing Bootstrap compiled CSS file
+  // Disable Nuxt from importing Bootstrap compiled CSS file
   bootstrapVue: {
     icons: true,
     bootstrapCSS: true,
@@ -121,4 +109,4 @@ export default {
     },
     vendor: ['vue-paypal-checkout']
   }
-}
+})

@@ -29,43 +29,40 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import SideBar from '../components/widget/SideBar.vue'
-import Slider from '../components/widget/Slider.vue'
-import { CategoryTree } from '../models/category'
-import { PaginatedList } from '../models/pagination'
-import { Product } from '../models/product'
-export default Vue.extend({
-  components: { SideBar, Slider },
-  name: 'IndexPage',
-  data() {
-    return {
-      categoryTree: [],
-      productsList: [],
-      loading: true
-    }
+<script setup lang="ts">
+import SideBar from "../components/widget/SideBar.vue";
+import Slider from "../components/widget/Slider.vue";
+import { CategoryTree } from "../models/category";
+import { PaginatedList } from "../models/pagination";
+import { Product } from "../models/product";
+
+definePageMeta({
+  transition: {
+    name: "IndexPage",
   },
-  async mounted() {
-    this.$axios
-      .$get('/api/category/tree/')
-      .then((categoryTree: CategoryTree[]) => {
-        this.categoryTree = categoryTree
-      })
-    // On prend les derniers produits enregistrés pour la page d'accueil
-    this.$axios
-      .$get('/api/product/last/')
-      .then((productsList: PaginatedList<Product>) => {
-        this.productsList = productsList
-        this.loading = false
-      })
-  },
-  methods: {
-    generateCategoryUrl(tree: any) {
-      return `/search?category=${tree.id}`
-    }
-  }
-})
+});
+const categoryTree = ref([]);
+const productsList = ref([]);
+const loading = ref(true);
+
+onMounted(() => {
+  $fetch("/api/category/tree/", {
+    method: "GET",
+  }).then((myCategoryTree: CategoryTree[]) => {
+    categoryTree.value = myCategoryTree;
+  });
+
+  $fetch("/api/product/last/", {
+    method: "GET",
+  }).then((myProductsList: PaginatedList<Product>) => {
+    productsList.value = myProductsList;
+    loading.value = false;
+  });
+});
+
+const generateCategoryUrl = (tree: any) => {
+  return `/search?category=${tree.id}`;
+};
 </script>
 
 <style>

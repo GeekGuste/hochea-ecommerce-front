@@ -101,58 +101,54 @@
     </b-row>
   </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
+<script setup lang="ts">
 import { PaginatedList } from '../models/pagination'
 import { Product } from '../models/product'
-export default Vue.extend({
-  name: 'ProductsList',
-  props: {
-    productsList: null,
-    loading: null
+const props = defineProps({
+  productsList: {
+    type: Array
   },
-  data() {
-    return {
-      //products: [],
-      currentPage: 1
-    }
-  },
-  mounted() {
-    this.currentPage = this.$route.query.page || 1
-  },
-  watch: {
-    '$route.query'() {
-      this.currentPage = this.$route.query.page || 1
-    }
-  },
-  computed: {
-    products() {
-      return this.productsList?.results
-    },
-    numberOfPages() {
-      return Math.ceil(this.productsList?.count / 12)
-    }
-  },
-  methods: {
-    productUrl(product: Product) {
-      return `/product/${product.id}`
-    },
-    linkGen(pageNum: Number) {
-      let query = this.$route.query
-      query.page = pageNum
-      return this.$router.history.current.path + '?' + this.toQueryString(query)
-    },
-    toQueryString(obj: Object) {
-      let str = []
-      for (var p in obj) {
-        if (obj.hasOwnProperty(p)) {
-          str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
-        }
-      }
-      return str.join('&')
-    }
+  loading: {
+    type: Boolean
   }
 })
+const currentPage = ref(1)
+const route = useRoute()
+const router = useRouter()
+
+onMounted(() => {
+  currentPage = route.query.page || 1
+})
+
+watch(
+  () => route.query,
+  () => {
+    currentPage.value = route.query.page || 1
+  }
+)
+
+const products = () => props.productsList?.results
+
+const numberOfPages = () => {
+  return Math.ceil(props.productsList?.count / 12)
+}
+const productUrl = (product: Product) => {
+  return `/product/${product.id}`
+}
+const linkGen = (pageNum: Number) => {
+  const query = route.query
+  query.page = pageNum
+  return router.history.current.path + '?' + toQueryString(query)
+}
+const toQueryString = (obj: Object) => {
+  let str = []
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
+    }
+  }
+  return str.join('&')
+}
 </script>
 <style lang="css" scoped>
 .card {

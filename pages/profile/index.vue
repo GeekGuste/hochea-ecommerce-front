@@ -41,8 +41,8 @@
               </strong>
             </td>
             <td class="text-primary">
-               <span v-if="!!user.phone_number"> {{ user.phone_number }}</span>
-               <span v-else>Non renseigné</span>
+              <span v-if="!!user.phone_number"> {{ user.phone_number }}</span>
+              <span v-else>Non renseigné</span>
             </td>
           </tr>
         </tbody>
@@ -50,26 +50,24 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import {User} from "../../models/user";
+<script setup lang="ts">
+import { User } from '../../models/user'
 
-export default Vue.extend({
-  name: "ProfileIndexPage",
-  layout: "profile",
-  middleware: ["auth"],
-  data(){
-      return {
-          user: null
-      }
+definePageMeta({
+  layout: 'profile',
+  transition: {
+    name: 'ProfileIndexPage'
   },
-  created: function () {
-      console.log(this.$auth.user);
-      this.$axios
-        .$get("/auth/users/me/")
-        .then((user: User) => {
-            this.user = user;
-        });
-  }
-});
+  middleware: ['auth']
+})
+
+const user: ref(null)
+
+onMounted(() => {
+  $fetch('/auth/users/me/', {
+    method: 'GET'
+  }).then((myUser: User) => {
+    user.value = myUser
+  })
+})
 </script>

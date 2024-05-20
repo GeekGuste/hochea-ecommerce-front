@@ -1,17 +1,11 @@
 <template>
   <div>
-    <div>
-      <NuxtLink class="btn btn-warning text-white" to="/admin/delivery/zone/"
-        >Liste</NuxtLink
-      >
-      <hr />
-    </div>
-    <b-card header="Ajouter une zone de livraison">
-      <b-form @submit="onSubmit" @reset="onReset">
+    <b-card header="Modifier une zone de livraison">
+      <b-form @submit="onSubmit">
         <b-form-group id="input-group-1" label="Zone:" label-for="input-1">
           <b-form-input
             id="input-1"
-            v-model="form.zone"
+            v-model="deliveryZoneInfo.zone"
             placeholder="Entrer la zone/pays"
             required
           ></b-form-input>
@@ -24,54 +18,53 @@
         >
           <b-form-input
             id="input-1"
-            v-model="form.delivery_charges"
+            v-model="deliveryZoneInfo.delivery_charges"
             placeholder="Entrer les frais de livraison"
             required
           ></b-form-input>
         </b-form-group>
 
-        <b-button type="submit" variant="primary">Enregistrer</b-button>
+        <b-button type="submit" variant="success">Modifier</b-button>
         <b-button type="reset" variant="danger">Annuler</b-button>
       </b-form>
     </b-card>
   </div>
 </template>
 <script setup lang="ts">
-import { DeliveryZoneInfo } from '../../../../models/delivery'
-import { PaginatedList } from '../../../../models/pagination'
+import { DeliveryZoneInfo } from '../../../../../models/delivery'
 
 definePageMeta({
   layout: 'admin',
   transition: {
-    name: 'AdminAddCategoriePage'
+    name: 'AdminEditdeliveryZoneInfoPage'
   },
   middleware: ['auth']
 })
-const form = ref({
+const deliveryZoneInfo = ref({
+  id: 0,
   zone: '',
-  delivery_charges: ''
+  delivery_charges: 0
 })
-const clearForm = () => {
-  // Reset our form values
-  form.value.zone = ''
-  form.value.delivery_charges = ''
-}
+const route = useRoute()
+
+onMounted(() => {
+  useFetch(`/api/deliveryZoneInfo/${route.params.id}/`).then(
+    (deliveryZoneInf: DeliveryZoneInfo) => {
+      deliveryZoneInf.value = { ...deliveryZoneInf }
+    }
+  )
+})
 const onSubmit = (event: any) => {
   event.preventDefault()
-  $fetch('/api/deliveryZoneInfo/', {
-    method: 'POST',
-    body: { ...form.value, is_active: true }
+  $fetch(`/api/deliveryZoneInfo/${route.params.id}/`, {
+    method: 'PUT',
+    body: deliveryZoneInfo.value
   }).then((res: any) => {
     //@ts-ignore
-    this.$bvToast.toast('Zone/pays de livraison enregistré avec succès', {
+    this.$bvToast.toast('Zone/pays de livraison modifié avec succès', {
       title: 'Succès',
       variant: 'success'
     })
-    clearForm()
   })
-}
-const onReset = (event: any) => {
-  event.preventDefault()
-  clearForm()
 }
 </script>

@@ -1,6 +1,13 @@
 <template>
   <div>
-    <h2><center>Liste des produits  <NuxtLink to="/admin/products/new" class="btn btn-primary">Ajouter</NuxtLink> </center></h2>
+    <h2>
+      <center>
+        Liste des produits
+        <NuxtLink to="/admin/products/new" class="btn btn-primary"
+          >Ajouter</NuxtLink
+        >
+      </center>
+    </h2>
     <b-row>
       <div
         class="card col-md-4 col-lg-3 col-sm-6 m-2 mt-2 mb-4 shadow-sm"
@@ -9,7 +16,7 @@
       >
         <div class="card-img">
           <img
-            style="height: 100px;"
+            style="height: 100px"
             :src="product.principal_image"
             class="card-img-top img-fluid"
             :alt="product.label"
@@ -20,8 +27,15 @@
             <h4 class="card-title mb-3">{{ product.label }}</h4>
             <div v-if="product.categories.length > 0">
               <p class="my-2">
-                <span class="badge badge-primary text-capitalize p-2 m-1" v-for="category of product.categories" :key="category.id">
-                  <NuxtLink class="product-category" :to="`/search?category=${category.id}`">
+                <span
+                  class="badge badge-primary text-capitalize p-2 m-1"
+                  v-for="category of product.categories"
+                  :key="category.id"
+                >
+                  <NuxtLink
+                    class="product-category"
+                    :to="`/search?category=${category.id}`"
+                  >
                     {{ category.label }}
                   </NuxtLink>
                 </span>
@@ -47,14 +61,7 @@
               class="text-decoration-none"
             >
               <button
-                class="
-                  btn btn-success btn-sm
-                  w-100
-                  d-flex
-                  align-items-center
-                  justify-content-center
-                  text-white
-                "
+                class="btn btn-success btn-sm w-100 d-flex align-items-center justify-content-center text-white"
               >
                 Modifier
               </button>
@@ -66,33 +73,25 @@
   </div>
 </template>
 <style lang="css" scoped>
-.product-category{
+.product-category {
   color: #fff;
   text-decoration: none;
 }
 </style>
-<script lang="ts">
-import Vue from "vue";
-import { Category } from "../../../models/category";
-import { PaginatedList } from "../../../models/pagination";
-import { Product } from "../../../models/product";
+<script setup lang="ts">
+import { Category } from '../../../models/category'
+import { PaginatedList } from '../../../models/pagination'
+import { Product } from '../../../models/product'
 
-export default Vue.extend({
-  name: "AdminCategorieListPage",
-  layout: "admin",
-  data() {
-    return {
-      products: [],
-      productList: null,
-    };
-  },
-  created: function () {
-    this.$axios
-      .$get("/api/product/?is_variant=False")
-      .then((productList: PaginatedList<Product>) => {
-        this.products = productList.results;
-        this.productList = productList;
-      });
-  },
-});
+definePageMeta({
+  layout: 'admin'
+})
+const products = ref([])
+const productList = ref(null)
+useFetch('/api/product/?is_variant=False').then(
+  (productListLoad: PaginatedList<Product>) => {
+    products.value = productListLoad.results
+    productList.value = productListLoad
+  }
+)
 </script>

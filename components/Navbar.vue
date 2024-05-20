@@ -78,50 +78,46 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import { CategoryTree } from '../models/category'
-import { mapGetters } from 'vuex'
+<script setup lang="ts">
+import { useCartStore } from '@/stores/cart'
 
-export default Vue.extend({
-  name: 'Navbar',
-  data() {
-    return {
-      categoryTree: [],
-      searchText: ''
-    }
-  },
-  mounted() {
-    this.$axios
-      .$get('/api/category/tree/')
-      .then((categoryTree: CategoryTree[]) => {
-        this.categoryTree = categoryTree
-      })
-    this.searchText = this.$route.query?.search_text
-  },
-  computed: {
-    ...mapGetters({
-      cartNumberOfProducts: 'cart/cartNumberOfProducts'
-    })
-  },
-  methods: {
-    async logout() {
-      this.$auth.logout().then(() => {
-        window.location.reload()
-      })
-    },
-    search() {
-      this.$router.push({
-        path: '/search/',
-        query: { search_text: this.searchText }
-      })
-    },
-    disableForm(e) {
-      e.preventDefault()
-    }
+import { CategoryTree } from '../models/category'
+
+definePageMeta({
+  transition: {
+    name: 'Navbar'
   }
 })
+
+const categoryTree = ref([])
+const searchText = ref('')
+const cart = useCartStore()
+
+onMounted(() => {
+  categoryTree.value = await useFetch('/api/category/tree/')
+  searchText.value = route.query?.search_text
+})
+const search = () => {
+  navigateTo({
+    path: '/search/',
+    query: {
+      search_text: searchText.value
+    }
+  })
+}
+
+const cartNumberOfProducts = computed(() => cart.items.length)
+
+const logout = async () => {
+  this.$auth.logout().then(() => {
+    window.location.reload()
+  })
+}
+const disableForm = (e) => {
+  e.preventDefault()
+}
 </script>
+
 <style>
 .menu-item a {
   color: #ffffff;

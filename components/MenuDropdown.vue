@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown-item class="menu-item"><NuxtLink :to="generateCategoryUrl(tree)">{{ tree.label }}</NuxtLink></b-dropdown-item>
+  <b-dropdown-item class="menu-item"><NuxtLink :to="generateCategoryUrl(tree)">{{ props.tree.label }}</NuxtLink></b-dropdown-item>
 </template>
 <style>
   .menu-item a{
@@ -10,17 +10,11 @@
   }
 </style>
 </style>
-<script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-  props: {
-    tree: {},
-  },
-  name: "MenuDropdown",
-  methods: {
-    generateCategoryUrl(tree: any){
-      return `/search?category=${tree.id}`;
-    }
+<script setup lang="ts">
+const props = defineProps({
+  tree: {
+    type: Object
   }
-});
+})
+const generateCategoryUrl = (tree: any) => `/search?category=${tree.id}`;
 </script>

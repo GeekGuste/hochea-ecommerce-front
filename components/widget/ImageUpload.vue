@@ -1,6 +1,12 @@
 <template>
   <div>
-    <b-img v-if="!!url" :src="url" max-width="100%" fluid alt="Responsive image"></b-img>
+    <b-img
+      v-if="!!url"
+      :src="url"
+      max-width="100%"
+      fluid
+      alt="Responsive image"
+    ></b-img>
     <b-form-group label="Image:">
       <b-form-file
         v-model="file"
@@ -14,42 +20,34 @@
     </b-form-group>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-  name: "ImageUpload",
-  props: {
-    imageUrl: {
-      type: String,
-      default: () => {return "";},
-    },
-  },
-  data() {
-    return {
-      file: [] as unknown,
-      loadedUrl: "",
-    };
-  },
-  computed: {
-    url(){
-      return !!this.loadedUrl ? this.loadedUrl: this?.imageUrl;
+<script setup lang="ts">
+const props = defineProps({
+  imageUrl: {
+    type: String,
+    default: () => ''
+  }
+})
+const emit = defineEmits(['onSelect'])
+const file = ref([])
+const loadedUrl = ref('')
+
+const url = computed(() =>
+  loadedUrl.value ? loadedUrl.value : props.imageUrl.value
+)
+
+const onSelect = (event: any) => {
+  file.value = event.target.files[0]
+  if (file.value) {
+    let reader = new FileReader()
+    reader.onload = (e) => {
+      loadedUrl.value = e?.target?.result as string
     }
-  },
-  methods: {
-    onSelect(event: any) {
-      this.file = event.target.files[0];
-      if (!!this.file) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          this.loadedUrl = e?.target?.result as string;
-        };
-        reader.readAsDataURL(this.file as Blob);
-        this.$emit("onSelect", { image: this.file });
-      }
-    },
-    clear: function(){
-      this.loadedUrl = "";
-    }
-  },
-});
+    reader.readAsDataURL(file.value as Blob)
+    emit('onSelect', { image: file.value })
+  }
+}
+
+const clear = () => {
+  loadedUrl.value = ''
+}
 </script>

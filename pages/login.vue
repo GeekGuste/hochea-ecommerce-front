@@ -38,43 +38,41 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-
-export default Vue.extend({
-  name: "LoginPage",
-  data() {
-      return {
-          form: {
-            email: "",
-            password: "",
-          },
-      };
-  },
-  methods: {
-    onSubmit(event: any) {
-      event.preventDefault();
-      this.logInUser(this.form);
-    },
-    onReset(event: any) {
-      event.preventDefault();
-      // Reset our form values
-      this.form.email = "";
-      this.form.password = "";
-    },
-    async logInUser(form: {email: string, password: string}) {
-      try {
-        let response = await this.$auth.loginWith("local", {
-          data: form,
-        });
-      } catch (error) {
-        //@ts-ignore
-         this.$bvToast.toast("Email ou mot de passe incorrect, veuillez réessayer", {
-            title: "Erreur",
-            variant: "danger",
-          });
-      }
-    },
+<script setup lang="ts">
+definePageMeta({
+  transition: {
+    name: "LoginPage",
   },
 });
+
+const form = ref({
+            email: "",
+            password: "",
+          })
+
+const onSubmit = (event: any) => {
+  event.preventDefault();
+  logInUser(form.valeur);
+}
+
+const onReset = (event: any) => {
+  event.preventDefault();
+  // Reset our form values
+  form.value.email = "";
+  form.value.password = "";
+}
+
+const logInUser = async (form: {email: string, password: string}) => {
+  try {
+    let response = await $auth.loginWith("local", {
+      data: form,
+    });
+  } catch (error) {
+    //@ts-ignore
+     this.$bvToast.toast("Email ou mot de passe incorrect, veuillez réessayer", {
+        title: "Erreur",
+        variant: "danger",
+      });
+  }
+}
 </script>

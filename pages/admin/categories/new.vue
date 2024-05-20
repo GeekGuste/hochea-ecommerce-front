@@ -2,7 +2,11 @@
   <div>
     <b-card header="Ajouter une catégorie">
       <b-form @submit="onSubmit" @reset="onReset">
-        <ImageUpload ref="uploadComponent" :imageUrl="null" @onSelect="onImageSelect" />
+        <ImageUpload
+          ref="uploadComponent"
+          :imageUrl="null"
+          @onSelect="onImageSelect"
+        />
         <b-form-group
           id="input-group-1"
           label="Nom de la catégorie:"
@@ -30,78 +34,74 @@
     </b-card>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import ImageUpload from "../../../components/widget/ImageUpload.vue";
-import { Category } from "../../../models/category";
-import { PaginatedList } from "../../../models/pagination";
+<script setup lang="ts">
+import ImageUpload from '../../../components/widget/ImageUpload.vue'
+import { Category } from '../../../models/category'
+import { PaginatedList } from '../../../models/pagination'
 
-export default Vue.extend({
-  components: { ImageUpload },
-  name: "AdminAddCategoriePage",
-  layout: "admin",
-  middleware: ["auth"],
-  data() {
-    return {
-      form: {
-        label: "",
-        image: "",
-        parent: "",
-      },
-      categories: [],
-      show: true,
-    };
+definePageMeta({
+  layout: 'admin',
+  transition: {
+    name: 'AdminAddCategoriePage'
   },
-  mounted: function () {
-    this.$axios.$get("/api/category/").then((categoryList: PaginatedList<Category>) => {
-      this.categories = categoryList.results.map((category) => {
-        return { value: category.id, text: category.label } as never;
-      });
-      this.categories.push({
-        value: "",
-        text: "Aucun",
-        selected: "selected",
-      } as never);
-    });
-  },
-  methods: {
-    onImageSelect(payload: any) {
-      this.form.image = payload.image;
-    },
-    onSubmit(event: any) {
-      event.preventDefault();
-      let formData = new FormData();
-      let config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
-      formData.append("is_active", "true");
-      formData.append("label", this.form.label);
-      formData.append("image", this.form.image);
-      formData.append("parent_id", this.form.parent);
-      this.$axios
-        .$post("/api/category/", formData, config)
-        .then((res: any) => {
-          //@ts-ignore
-          this.$bvToast.toast("Catégorie " + this.form.label + " ajoutée avec succès!", {
-            title: "Succès",
-            variant: "success",
-          });
-          this.clearForm();
-        });
-    },
-    onReset(event: any) {
-      event.preventDefault();
-      this.clearForm();
-    },
-    clearForm() {
-      // Reset our form values
-      this.form.label = "";
-      this.form.parent = "";
-      this.form.image = "";
-      this.$refs.uploadComponent.clear();
-    },
-  },
-});
+  middleware: ['auth']
+})
+
+const form = ref({
+  label: '',
+  image: '',
+  parent: ''
+})
+const categories = ref([])
+const show = ref(true)
+const uploadComponent = ref(null)
+
+onMounted(() => {
+  useFetch('/api/category/').then((categoryList: PaginatedList<Category>) => {
+    categories.value = categoryList.results
+  })
+})
+const onImageSelect = (payload: any) => {
+  form.value.image = payload.image
+}
+
+const clearForm = () => {
+  // Reset our form values
+  form.value.label = ''
+  form.value.parent = ''
+  form.value.image = ''
+  uploadComponent.clear()
+}
+const onSubmit = (event: any) => {
+  event.preventDefault()
+  let formData = new FormData()
+  let config = {
+    headers: {
+      'content-type': 'multipart/form-data'
+    }
+  }
+  formData.append('is_active', 'true')
+  formData.append('label', form.value.label)
+  formData.append('image', form.value.image)
+  formData.append('parent_id', form.value.parent)
+  $fetch('/api/category/', {
+    method: 'POST',
+    body: formData,
+    ...config
+  }).then((res: any) => {
+    //@ts-ignore
+    this.$bvToast.toast(
+      'Catégorie ' + form.value.label + ' ajoutée avec succès!',
+      {
+        title: 'Succès',
+        variant: 'success'
+      }
+    )
+    clearForm()
+  })
+}
+const onReset = (event: any) => {
+  event.preventDefault()
+  clearForm()
+}
 </script>

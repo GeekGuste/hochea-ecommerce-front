@@ -39,47 +39,47 @@
     </b-form>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { User } from "../../models/user";
-export default Vue.extend({
-  name: "ProfileEditAccountPage",
-  layout: "profile",
-  middleware: ["auth"],
-  data() {
-    return {
-      form: {
-        first_name: "",
-        last_name: "",
-        phone_number: "",
-      },
-      id: null,
-    };
+<script setup lang="ts">
+import { User } from '../../models/user'
+definePageMeta({
+  layout: 'profile',
+  transition: {
+    name: 'ProfileEditAccountPage'
   },
-  created: function () {
-    console.log(this.$auth.user);
-    this.$axios.$get("/auth/users/me/").then((user: User) => {
-      this.id = user.id;
-      this.form.first_name = user.first_name;
-      this.form.last_name = user.last_name;
-      this.form.phone_number = user.phone_number;
-    });
-  },
-  methods: {
-    onSubmit(event: any) {
-      event.preventDefault();
-      //user registration
-      this.$axios
-        .$patch(`/api/profile/${this.id}/`, { ...this.form })
-        .then((result) => {
-          //@ts-ignore
-          this.$bvToast.toast("Compte mis à jour avec succès", {
-            title: "Succès",
-            variant: "success", 
-          });
-        });
-    },
-    onReset(event: any) {},
-  },
-});
+  middleware: ['auth']
+})
+const form = ref({
+  first_name: '',
+  last_name: '',
+  phone_number: ''
+})
+const id = ref(null)
+
+onMounted(() => {
+  categoryTree.value = await useFetch('/api/category/tree/')
+  $fetch('/auth/users/me/', {
+    method: 'GET'
+  }).then((user: User) => {
+    id.value = user.id
+    form.value.first_name = user.first_name
+    form.value.last_name = user.last_name
+    form.value.phone_number = user.phone_number
+  })
+})
+
+const onSubmit = (event: any) {
+  event.preventDefault()
+  //user registration
+  $fetch(`/api/profile/${id.value}/`, {
+    method: 'PATCH',
+    body: {...form.value},
+  }).then((result) => {
+      //@ts-ignore
+      this.$bvToast.toast('Compte mis à jour avec succès', {
+        title: 'Succès',
+        variant: 'success'
+      })
+    })
+}
+const onReset = (event: any) => {}
 </script>

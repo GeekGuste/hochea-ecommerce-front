@@ -116,9 +116,8 @@
     </b-row>
   </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import { mapActions } from 'vuex'
+<script setup lang="ts">
+import { useCartStore } from '@/stores/cart'
 import {
   Product,
   CartItem,
@@ -128,126 +127,116 @@ import {
   WithSizeVariantSize
 } from '../../models/product'
 
-export default Vue.extend({
-  name: 'ProductDetailPage',
-  data() {
-    return {
-      product: {} as Product | null,
-      selectedProduct: {} as Product | null,
-      selectedImageSrc: '',
-      images: [],
-      withSizeVariantList: [] as WithSizeVariant[],
-      withSizeVariantSizeList: [] as WithSizeVariantSize[],
-      isSizeSetted: false,
-      selectedVariantLabel: '',
-      selectedVariantSize: ''
-    }
-  },
-  computed: {
-    type() {
-      if (this.product.variant_type.id === 1) {
-        // couleur
-        return 'color'
-      } else {
-        return 'text'
-      }
-    }
-  },
-  created() {
-    this.$axios
-      .$get(`/api/product/${this.$route.params.id}/`)
-      .then((product: Product) => {
-        this.product = product
-        this.selectedProduct = product
-        this.selectedImageSrc = product.principal_image
-        this.images = product.images
-        if (this.product.with_size) {
-          this.product.variants.forEach((variant) => {
-            if (
-              !this.withSizeVariantList.find(
-                (v) => v.label === variant.variant_value
-              )
-            ) {
-              this.withSizeVariantList.push({
-                label: variant.variant_value,
-                image: variant.images[0].photo
-              })
-            }
-          })
-        }
-        // Add principal image at top list
-        this.images.unshift({ id: product.id, photo: product.principal_image })
-      })
-  },
-  methods: {
-    ...mapActions({
-      addProductToCart: 'cart/addProduct'
-    }),
-    addProduct(product: Product) {
-      const cartItem = {
-        id: product.id,
-        label: product.label,
-        quantity: 1,
-        price: product.promo_price ? product.promo_price : product.price,
-        image: this.selectedImageSrc,
-        qte_stock: product.qte_stock,
-        variant_value: product.variant_value,
-        variant_type: this.product?.variant_type?.label,
-        weight: product.weight
-      } as CartItem
-      this.addProductToCart(cartItem)
-      // @ts-ignore
-      this.$bvToast.toast(
-        'Le produit ' + product.label + ' a été ajouté au panier avec succès',
-        {
-          title: 'Succès',
-          variant: 'success'
-        }
-      )
-    },
-    selectVariantLabel(label: string) {
-      this.selectedVariantLabel = label
-      this.selectedVariantSize = ''
-      const selectedVariants = this.product.variants.filter(
-        (variant: Product) => variant.variant_value === label
-      )
-      this.images = selectedVariants[0].images
-      this.selectedImageSrc = selectedVariants[0].images[0].photo
-      this.withSizeVariantSizeList = selectedVariants.map(
-        (variant: Product) => {
-          return {
-            text: variant.size,
-            value: variant.size
-          }
-        }
-      )
-    },
-    selectVariantSize(checked: string) {
-      this.selectedVariantSize = checked
-      this.selectedProduct = this.product.variants.find(
-        (variant) =>
-          variant.variant_value == this.selectedVariantLabel &&
-          variant.size === checked
-      )
-    },
-    selectVariantOption(event: any) {
-      const variant = this.product.variants.find(
-        (variant: Product) => variant.id === event.target.value
-      )
-      this.selectVariant(variant)
-    },
-    selectVariant(variant: Product) {
-      this.selectedImageSrc = (
-        variant.images.length > 0
-          ? variant.images[0].photo
-          : this.product.principal_image
-      ) as string
-      this.images =
-        variant.images.length > 0 ? variant.images : this.product.images
-      this.selectedProduct = variant
-    }
+definePageMeta({
+  transition: {
+    name: 'ProductDetailPage'
   }
 })
+
+const cart = useCartStore()
+const product = ref({} as Product | null)
+const selectedProduct = ref({} as Product | null)
+const selectedImageSrc = ref('')
+const images = ref([])
+const withSizeVariantList = ref([] as WithSizeVariant[])
+const withSizeVariantSizeList = ref([] as WithSizeVariantSize[])
+const isSizeSetted = ref(false)
+const selectedVariantLabel = ref('')
+const selectedVariantSize = ref('')
+
+const type = computed(() => {
+  if (product.value.variant_type.id === 1) {
+    // couleur
+    return 'color'
+  } else {
+    return 'text'
+  }
+})
+onMounted(() => {
+  useFetch(`/api/product/${route.params.id}/`).then((product: Product) => {
+    this.product = product
+    this.selectedProduct = product
+    this.selectedImageSrc = product.principal_image
+    this.images = product.images
+    if (this.product.with_size) {
+      this.product.variants.forEach((variant) => {
+        if (
+          !this.withSizeVariantList.find(
+            (v) => v.label === variant.variant_value
+          )
+        ) {
+          this.withSizeVariantList.push({
+            label: variant.variant_value,
+            image: variant.images[0].photo
+          })
+        }
+      })
+    }
+    // Add principal image at top list
+    this.images.unshift({ id: product.id, photo: product.principal_image })
+  })
+})
+const addProduct = (product: Product) => {
+  const cartItem = {
+    id: product.id,
+    label: product.label,
+    quantity: 1,
+    price: product.promo_price ? product.promo_price : product.price,
+    image: selectedImageSrc.value,
+    qte_stock: product.qte_stock,
+    variant_value: product.variant_value,
+    variant_type: product?.variant_type?.label,
+    weight: product.weight
+  } as CartItem
+  cart.addProduct(cartItem)
+  // @ts-ignore
+  this.$bvToast.toast(
+    'Le produit ' + product.label + ' a été ajouté au panier avec succès',
+    {
+      title: 'Succès',
+      variant: 'success'
+    }
+  )
+}
+const selectVariantLabel = (label: string) => {
+  selectedVariantLabel.value = label
+  selectedVariantSize.value = ''
+  const selectedVariants = product.value.variants.filter(
+    (variant: Product) => variant.variant_value === label
+  )
+  images.value = selectedVariants[0].images
+  selectedImageSrc.value = selectedVariants[0].images[0].photo
+  withSizeVariantSizeList.value = selectedVariants.map((variant: Product) => {
+    return {
+      text: variant.size,
+      value: variant.size
+    }
+  })
+}
+const selectVariantSize = (checked: string) => {
+  selectedVariantSize.value = checked
+  selectedProduct.value = product.value.variants.find(
+    (variant) =>
+      variant.variant_value == selectedVariantLabel.value &&
+      variant.size === checked
+  )
+}
+const selectVariantOption = (event: any) => {
+  const variant = product.value.variants.find(
+    (variant: Product) => variant.id === event.target.value
+  )
+  selectVariant(variant)
+}
+const selectVariant = (variant: Product) => {
+  selectedImageSrc.value = (
+    variant.images.length > 0
+      ? variant.images[0].photo
+      : product.value.principal_image
+  ) as string
+  images.value =
+    variant.images.length > 0 ? variant.images : product.value.images
+  selectedProduct.value = variant
+}
 </script>
 <style>
 .isSelected {
