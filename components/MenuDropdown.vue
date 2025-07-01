@@ -10,17 +10,10 @@
   }
 </style>
 </style>
-<script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-  props: {
-    tree: {},
-  },
-  name: "MenuDropdown",
-  methods: {
-    generateCategoryUrl(tree: any){
-      return `/search?category=${tree.id}`;
-    }
-  }
-});
+<script setup lang="ts">
+defineProps<{ tree: any }>()
+
+function generateCategoryUrl(tree: any) {
+  return `/search?category=${tree.id}`
+}
 </script>

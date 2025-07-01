@@ -38,11 +38,11 @@
           ></b-nav-item>
           <b-nav-item-dropdown text="Compte" right>
             <!-- Using 'button-content' slot -->
-            <template v-if="this.$auth.loggedIn">
+            <template v-if="$auth.loggedIn">
               <b-dropdown-item
                 v-if="
-                  this.$auth.user.role == 'ADMIN' ||
-                  this.$auth.user.role == 'SUPERADMIN'
+                  $auth.user.role == 'ADMIN' ||
+                  $auth.user.role == 'SUPERADMIN'
                 "
                 to="/admin/"
                 >Administration</b-dropdown-item
@@ -78,49 +78,44 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter, useRoute } from '#imports'
+import MenuDropdown from './MenuDropdown.vue'
 import { CategoryTree } from '../models/category'
-import { mapGetters } from 'vuex'
 
-export default Vue.extend({
-  name: 'Navbar',
-  data() {
-    return {
-      categoryTree: [],
-      searchText: ''
-    }
-  },
-  mounted() {
-    this.$axios
-      .$get('/api/category/tree/')
-      .then((categoryTree: CategoryTree[]) => {
-        this.categoryTree = categoryTree
-      })
-    this.searchText = this.$route.query?.search_text
-  },
-  computed: {
-    ...mapGetters({
-      cartNumberOfProducts: 'cart/cartNumberOfProducts'
-    })
-  },
-  methods: {
-    async logout() {
-      this.$auth.logout().then(() => {
-        window.location.reload()
-      })
-    },
-    search() {
-      this.$router.push({
-        path: '/search/',
-        query: { search_text: this.searchText }
-      })
-    },
-    disableForm(e) {
-      e.preventDefault()
-    }
-  }
+const store = useStore()
+const router = useRouter()
+const route = useRoute()
+
+const categoryTree = ref<CategoryTree[]>([])
+const searchText = ref('')
+
+onMounted(async () => {
+  const { data } = await useFetch<CategoryTree[]>('/api/category/tree/')
+  if (data.value) categoryTree.value = data.value
+  searchText.value = (route.query.search_text as string) || ''
 })
+
+const cartNumberOfProducts = computed(() =>
+  store.getters['cart/cartNumberOfProducts']
+)
+
+function logout() {
+  const nuxtApp = useNuxtApp()
+  nuxtApp.$auth.logout().then(() => {
+    window.location.reload()
+  })
+}
+
+function search() {
+  router.push({ path: '/search/', query: { search_text: searchText.value } })
+}
+
+function disableForm(e: Event) {
+  e.preventDefault()
+}
 </script>
 <style>
 .menu-item a {
