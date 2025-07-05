@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineNuxtConfig({
   app: {
@@ -43,5 +44,8 @@ export default defineNuxtConfig({
       BASE_URL: process.env.BASE_URL || 'https://hochea.tincom.biz',
       STRIPE_PK: process.env.STRIPE_PK
     }
+  }
+  ,vite: {
+    plugins: [tsconfigPaths()]
   }
 })

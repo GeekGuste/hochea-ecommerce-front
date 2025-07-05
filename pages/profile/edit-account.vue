@@ -39,47 +39,39 @@
     </b-form>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { User } from "../../models/user";
-export default Vue.extend({
-  name: "ProfileEditAccountPage",
-  layout: "profile",
-  middleware: ["auth"],
-  data() {
-    return {
-      form: {
-        first_name: "",
-        last_name: "",
-        phone_number: "",
-      },
-      id: null,
-    };
-  },
-  created: function () {
-    console.log(this.$auth.user);
-    this.$axios.$get("/auth/users/me/").then((user: User) => {
-      this.id = user.id;
-      this.form.first_name = user.first_name;
-      this.form.last_name = user.last_name;
-      this.form.phone_number = user.phone_number;
-    });
-  },
-  methods: {
-    onSubmit(event: any) {
-      event.preventDefault();
-      //user registration
-      this.$axios
-        .$patch(`/api/profile/${this.id}/`, { ...this.form })
-        .then((result) => {
-          //@ts-ignore
-          this.$bvToast.toast("Compte mis à jour avec succès", {
-            title: "Succès",
-            variant: "success", 
-          });
-        });
-    },
-    onReset(event: any) {},
-  },
-});
+<script setup lang="ts">
+import { reactive, ref } from 'vue'
+import { User } from '../../models/user'
+
+definePageMeta({ layout: 'profile', middleware: ['auth'] })
+
+const form = reactive({
+  first_name: '',
+  last_name: '',
+  phone_number: ''
+})
+const id = ref<number | null>(null)
+const nuxtApp = useNuxtApp()
+
+const { data: user } = await useFetch<User>('/auth/users/me/')
+if (user.value) {
+  id.value = user.value.id
+  form.first_name = user.value.first_name
+  form.last_name = user.value.last_name
+  form.phone_number = user.value.phone_number
+}
+
+async function onSubmit(event: Event) {
+  event.preventDefault()
+  await nuxtApp.$axios.$patch(`/api/profile/${id.value}/`, { ...form })
+  // @ts-ignore
+  nuxtApp.$bvToast.toast('Compte mis à jour avec succès', {
+    title: 'Succès',
+    variant: 'success'
+  })
+}
+
+function onReset(event: Event) {
+  event.preventDefault()
+}
 </script>

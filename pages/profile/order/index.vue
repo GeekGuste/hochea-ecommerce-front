@@ -46,54 +46,50 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { PaginatedList } from "../../../models/pagination";
-import { Order } from "../../../models/product";
-export default Vue.extend({
-  name: "UserOrderPage",
-  layout: "profile",
-  middleware: ["auth"],
-  data() {
-    return {
-      orderList: null,
-      id: null,
-      currentPage: 1
-    };
-  },
-  mounted: function () {
-    this.currentPage = this.$route.query.page || 1;
-    this.loadOrders();
-  },
-  watch: {
-    "$route.query" (){
-      this.currentPage = this.$route.query.page || 1;
-      this.loadOrders();
-    }
-  },
-  methods: {
-    loadOrders(){
-      this.$axios.$get(`/api/order/?page=${this.currentPage}`).then((orderList: PaginatedList<Order>) => {
-        this.orderList = orderList;
-      });
-    },
-    formatDate(dateString: string){
-        return new Date(dateString).toLocaleString("fr-FR");
-    },
-    linkGen(pageNum: Number){
-      let query = this.$route.query;
-      query.page = pageNum;
-      return this.$router.history.current.path + "?" + this.toQueryString(query);
-    },
-    toQueryString(obj: Object){
-      let str = [];
-      for (var p in obj){
-        if (obj.hasOwnProperty(p)) {
-          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-        }
-      }
-      return str.join("&");
-    }
-  },
-});
+<script setup lang="ts">
+import { ref, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from '#imports'
+import { PaginatedList } from '../../../models/pagination'
+import { Order } from '../../../models/product'
+
+definePageMeta({ layout: 'profile', middleware: ['auth'] })
+
+const route = useRoute()
+const router = useRouter()
+
+const orderList = ref<PaginatedList<Order> | null>(null)
+const currentPage = ref(1)
+
+async function loadOrders() {
+  const { data } = await useFetch<PaginatedList<Order>>(`/api/order/?page=${currentPage.value}`)
+  if (data.value) orderList.value = data.value
+}
+
+watch(
+  () => route.query.page,
+  () => {
+    currentPage.value = Number(route.query.page || 1)
+    loadOrders()
+  }
+)
+
+onMounted(() => {
+  currentPage.value = Number(route.query.page || 1)
+  loadOrders()
+})
+
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleString('fr-FR')
+}
+
+function linkGen(pageNum: number) {
+  const query = { ...route.query, page: pageNum }
+  return router.currentRoute.value.path + '?' + toQueryString(query)
+}
+
+function toQueryString(obj: Record<string, any>) {
+  return Object.keys(obj)
+    .map(p => encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
+    .join('&')
+}
 </script>

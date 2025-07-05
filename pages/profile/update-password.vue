@@ -45,52 +45,47 @@
     </b-form>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-  name: "ProfileEditAccountPage",
-  layout: "profile",
-  middleware: ["auth"],
-  data() {
-    return {
-      form: {
-        new_password: "",
-        re_new_password: "",
-        current_password: "",
-      },
-      id: null,
-    };
-  },
-  methods: {
-    onSubmit(event: any) {
-      event.preventDefault();
-      if (this.form.new_password != this.form.re_new_password) {
-        //@ts-ignore
-        this.$bvToast.toast("Les mots de passe saisis ne sont pas identiques", {
-          title: "Erreur",
-          variant: "danger",
-        });
-        return;
-      }
-      //user registration
-      this.$axios
-        .$post("/auth/users/set_password/", { ...this.form })
-        .then((result) => {
-          //@ts-ignore
-          this.$bvToast.toast("Mot de passe mis à jour avec succèss", {
-            title: "Succès",
-            variant: "success",
-          });
-        },
-        (error) => {
-            //@ts-ignore
-            this.$bvToast.toast("Erreur de modification de mot de passe", {
-              title: "erreur",
-              variant: "danger",
-            });
-        });
-    },
-    onReset(event: any) {},
-  },
-});
+<script setup lang="ts">
+import { reactive } from 'vue'
+
+definePageMeta({ layout: 'profile', middleware: ['auth'] })
+
+const form = reactive({
+  new_password: '',
+  re_new_password: '',
+  current_password: ''
+})
+
+const nuxtApp = useNuxtApp()
+
+async function onSubmit(event: Event) {
+  event.preventDefault()
+  if (form.new_password !== form.re_new_password) {
+    // @ts-ignore
+    nuxtApp.$bvToast.toast('Les mots de passe saisis ne sont pas identiques', {
+      title: 'Erreur',
+      variant: 'danger'
+    })
+    return
+  }
+
+  try {
+    await nuxtApp.$axios.$post('/auth/users/set_password/', { ...form })
+    // @ts-ignore
+    nuxtApp.$bvToast.toast('Mot de passe mis à jour avec succèss', {
+      title: 'Succès',
+      variant: 'success'
+    })
+  } catch {
+    // @ts-ignore
+    nuxtApp.$bvToast.toast('Erreur de modification de mot de passe', {
+      title: 'erreur',
+      variant: 'danger'
+    })
+  }
+}
+
+function onReset(event: Event) {
+  event.preventDefault()
+}
 </script>

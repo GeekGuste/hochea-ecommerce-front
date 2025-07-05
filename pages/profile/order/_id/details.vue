@@ -63,29 +63,22 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { Order } from "../../../../models/product";
-export default Vue.extend({
-  name: "UserOrderPage",
-  layout: "profile",
-  middleware: ["auth"],
-  data() {
-    return {
-      order: null,
-      id: null,
-    };
-  },
-  mounted: function () {
-    this.$axios.$get(`/api/order/${this.$route.params.id}/`)
-        .then((order: Order) => {
-            this.order = order;
-        });
-  },
-  methods: {
-    formatDate(dateString: string){
-        return new Date(dateString).toLocaleString("fr-FR");
-    },
-  },
-});
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRoute } from '#imports'
+import { Order } from '../../../../models/product'
+
+definePageMeta({ layout: 'profile', middleware: ['auth'] })
+
+const route = useRoute()
+const order = ref<Order | null>(null)
+
+onMounted(async () => {
+  const { data } = await useFetch<Order>(`/api/order/${route.params.id}/`)
+  if (data.value) order.value = data.value
+})
+
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleString('fr-FR')
+}
 </script>

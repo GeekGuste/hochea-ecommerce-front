@@ -45,44 +45,33 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-  data() {
-    return {
-      form: {
-        email: "",
-        name: "",
-        message: "",
-      },
-    };
-  },
-  methods: {
-    onSubmit(event) {
-      event.preventDefault();
-       this.$axios
-        .$post("/sales/contact/", this.form)
-        .then((result) => {
-            //@ts-ignore
-            this.$bvToast.toast("Message envoyé avec succès. Nous vous répondrons dans de brefs délais", {
-                title: "Succès",
-                variant: "success",
-            });
-            this.clearForm();
-        }, 
-        (error) => {
-            //@ts-ignore
-            this.$bvToast.toast("Erreur d'envoi de message, veuillez réessayer plus tard", {
-                title: "Erreur",
-                variant: "danger",
-            });
-        });
-    },
-    clearForm(){
-        this.form.email = "";
-        this.form.name = "";
-        this.form.message = "";
-    }
-  },
-});
+<script setup lang="ts">
+import { reactive } from 'vue'
+const form = reactive({ email: '', name: '', message: '' })
+const nuxtApp = useNuxtApp()
+
+function clearForm() {
+  form.email = ''
+  form.name = ''
+  form.message = ''
+}
+
+async function onSubmit(event: Event) {
+  event.preventDefault()
+  try {
+    await nuxtApp.$axios.$post('/sales/contact/', form)
+    // @ts-ignore
+    nuxtApp.$bvToast.toast(
+      "Message envoyé avec succès. Nous vous répondrons dans de brefs délais",
+      { title: 'Succès', variant: 'success' }
+    )
+    clearForm()
+  } catch (error) {
+    // @ts-ignore
+    nuxtApp.$bvToast.toast(
+      "Erreur d'envoi de message, veuillez réessayer plus tard",
+      { title: 'Erreur', variant: 'danger' }
+    )
+  }
+}
 </script>
