@@ -25,25 +25,23 @@ export default defineNuxtConfig({
   css: ['~/assets/scss/main'],
   plugins: [
     { src: '~/plugins/vue-stripe.js', mode: 'client' },
-    { src: '~/plugins/paypal.client.js', mode: 'client' }
+    { src: '~/plugins/paypal.client.js', mode: 'client' },
+    { src: '~/plugins/axios.ts', mode: 'client' },
+    { src: '~/plugins/auth.client.ts', mode: 'client' }
   ],
   components: true,
-  runtimeConfig: {
-    public: {
-      STRIPE_PK: process.env.STRIPE_PK
-    }
-  },
   modules: [
-    'bootstrap-vue-3/nuxt',
-    '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    'bootstrap-vue-3/nuxt'
   ],
   bootstrapVue: {
     icons: true,
     bootstrapCSS: true,
     bootstrapVueCSS: true
   },
-  axios: {
-    baseURL: process.env.BASE_URL || 'https://hochea.tincom.biz'
+  runtimeConfig: {
+    public: {
+      BASE_URL: process.env.BASE_URL || 'https://hochea.tincom.biz',
+      STRIPE_PK: process.env.STRIPE_PK
+    }
   }
 })
