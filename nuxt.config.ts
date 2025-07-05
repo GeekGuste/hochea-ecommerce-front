@@ -22,7 +22,7 @@ export default defineNuxtConfig({
       ]
     }
   },
-  css: ['~/assets/scss/main'],
+  css: ['~/assets/scss/main.scss'],
   plugins: [
     { src: '~/plugins/vue-stripe.js', mode: 'client' },
     { src: '~/plugins/paypal.client.js', mode: 'client' },
