@@ -50,26 +50,13 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import {User} from "../../models/user";
+<script setup lang="ts">
+import { ref } from 'vue'
+import { User } from '../../models/user'
 
-export default Vue.extend({
-  name: "ProfileIndexPage",
-  layout: "profile",
-  middleware: ["auth"],
-  data(){
-      return {
-          user: null
-      }
-  },
-  created: function () {
-      console.log(this.$auth.user);
-      this.$axios
-        .$get("/auth/users/me/")
-        .then((user: User) => {
-            this.user = user;
-        });
-  }
-});
+definePageMeta({ layout: 'profile', middleware: ['auth'] })
+
+const user = ref<User | null>(null)
+const { data } = await useFetch<User>('/auth/users/me/')
+if (data.value) user.value = data.value
 </script>

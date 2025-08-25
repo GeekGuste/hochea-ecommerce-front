@@ -9,53 +9,46 @@
             placeholder="Nom"
             type="text"
             required
-          ></b-form-input>
+          />
         </b-form-group>
-        <b-form-group id="input-group-1" label="Prénom*:" label-for="input-1">
+        <b-form-group id="input-group-2" label="Prénom*:" label-for="input-2">
           <b-form-input
-            id="input-1"
+            id="input-2"
             v-model="form.first_name"
             placeholder="Prénom"
             type="text"
             required
-          ></b-form-input>
+          />
         </b-form-group>
-        <b-form-group id="input-group-1" label="Email*:" label-for="input-1">
+        <b-form-group id="input-group-3" label="Email*:" label-for="input-3">
           <b-form-input
-            id="input-1"
+            id="input-3"
             v-model="form.email"
             placeholder="Email"
             type="email"
             required
-          ></b-form-input>
+          />
         </b-form-group>
-        
-        <b-form-group id="input-group-1" label="Numéro de téléphone:" label-for="input-1">
+        <b-form-group id="input-group-4" label="Numéro de téléphone:" label-for="input-4">
           <b-form-input
-            id="input-1"
+            id="input-4"
             v-model="form.phone_number"
             placeholder="Numéro de téléphone"
             type="text"
-          ></b-form-input>
+          />
         </b-form-group>
-
-        <b-form-group
-          id="input-group-1"
-          label="Mot de passe*:"
-          label-for="input-1"
-        >
+        <b-form-group id="input-group-5" label="Mot de passe*:" label-for="input-5">
           <b-form-input
-            id="input-1"
+            id="input-5"
             v-model="form.password"
             type="password"
             placeholder="Mot de passe"
             required
-          ></b-form-input>
+          />
           <b-form-text>
             Votre mot de passe doit faire au moins 8 caractères
           </b-form-text>
         </b-form-group>
-
         <b-button type="submit" variant="primary">S'inscrire</b-button>
         <b-button type="reset" variant="danger">Annuler</b-button>
       </b-form>
@@ -63,60 +56,34 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script setup lang="ts">
+import { reactive } from 'vue'
 
-export default Vue.extend({
-  name: "LoginPage",
-  data() {
-      return {
-          form: {
-            first_name: "",
-            last_name: "",
-            email: "",
-            password: "",
-            phone_number: ""
-          },
-      };
-  },
-  methods: {
-    onSubmit(event: any) {
-      event.preventDefault();
-      //user registration
-      this.$axios
-      .$post("/auth/users/", {...this.form, username: this.form.email})
-      .then((result) => {
-            if(!!result){
-              //login with user account information
-              this.$auth.loginWith('local', { data: {email: this.form.email, password: this.form.password}})
-                .then(() => {
-                  //@ts-ignore
-                  this.$bvToast.toast("inscription réussie \n Vous allez être redirigé vers votre espace client", {
-                      title: "Succès",
-                      variant: "success",
-                  });
-                  //redirect to profile page
-                  window.location.replace('/profile/');
-                });
-            }
-      });
-    },
-    onReset(event: any) {
-      event.preventDefault();
-      // Reset our form values
-      this.form.email = "";
-      this.form.password = "";
-    },
-    async logInUser(form: {email: string, password: string}) {
-      try {
-        let response = await this.$auth.loginWith("local", {
-          data: form,
-        });
-        console.log("success: " + JSON.stringify(response));
-      } catch (error) {
-        console.log("notification unsuccessful because " + JSON.stringify(error));
-      }
-    },
-  },
-});
+const form = reactive({
+  first_name: '',
+  last_name: '',
+  email: '',
+  password: '',
+  phone_number: ''
+})
+
+const nuxtApp = useNuxtApp()
+
+async function onSubmit(event: Event) {
+  event.preventDefault()
+  const result = await nuxtApp.$axios.post('/auth/users/', {
+    ...form,
+    username: form.email
+  })
+  if (result) {
+    await nuxtApp.$auth.loginWith('local', { data: { email: form.email, password: form.password } })
+    window.location.replace('/profile/')
+  }
+}
+
+function onReset(event: Event) {
+  event.preventDefault()
+  form.email = ''
+  form.password = ''
+}
 </script>

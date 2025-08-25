@@ -47,22 +47,23 @@
         </div>
     </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import { mapActions, mapGetters, mapMutations } from 'vuex'
-export default Vue.extend({
-    computed: {
-        ...mapGetters({
-        items: 'cart/items',
-        cartTotalPrice: 'cart/cartTotalPrice'
-        }),
-    },
-    methods: {
-        ...mapMutations({
-            incrementProductQuantity: 'cart/incrementProductQuantity',
-            reduceProductQuantity: 'cart/reduceProductQuantity',
-            removeProduct: 'cart/removeProduct'
-        }),
-    }
-    })
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
+const items = computed(() => store.getters['cart/items'])
+const cartTotalPrice = computed(() => store.getters['cart/cartTotalPrice'])
+
+function incrementProductQuantity(payload: { id: any; quantity: number }) {
+  store.commit('cart/incrementProductQuantity', payload)
+}
+
+function reduceProductQuantity(payload: { id: any; quantity: number }) {
+  store.commit('cart/reduceProductQuantity', payload)
+}
+
+function removeProduct(id: any) {
+  store.commit('cart/removeProduct', id)
+}
 </script>

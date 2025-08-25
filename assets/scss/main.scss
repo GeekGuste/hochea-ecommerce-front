@@ -1,5 +1,6 @@
 // Bootstrap and BootstrapVue SCSS files
-@import '~bootstrap/scss/bootstrap.scss';
-@import '~bootstrap-vue/src/index.scss';
+// Use node module paths directly so Vite resolves them correctly
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 // General style overrides and custom classes
 @import 'theme';
